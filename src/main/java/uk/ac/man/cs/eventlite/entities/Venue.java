@@ -1,7 +1,16 @@
 package uk.ac.man.cs.eventlite.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="venues")
 public class Venue {
 
+	@Id
+	@GeneratedValue
 	private long id;
 
 	private String name;
@@ -9,6 +18,11 @@ public class Venue {
 	private int capacity;
 
 	public Venue() {
+	}
+	
+	public Venue(String name, int capacity) {
+		this.name = name;
+		this.capacity = capacity;
 	}
 
 	public long getId() {

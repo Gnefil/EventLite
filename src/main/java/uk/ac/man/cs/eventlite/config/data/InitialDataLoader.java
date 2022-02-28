@@ -15,6 +15,7 @@ import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.EventServiceImpl;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Configuration
 @Profile("default")
@@ -37,6 +38,7 @@ public class InitialDataLoader {
 				log.info("Database already populated with venues. Skipping venue initialization.");
 			} else {
 				// Build and save initial venues here.
+				log.info("Preloading: " + venueService.save(new Venue("Name", 100)));
 			}
 
 			if (eventService.count() > 0) {
