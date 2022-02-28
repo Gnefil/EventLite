@@ -31,7 +31,7 @@ public class InitialDataLoader {
 	private VenueService venueService;
 
 	@Bean
-	CommandLineRunner initDatabase(EventService eService) {
+	CommandLineRunner initDatabase() {
 		return args -> {
 			if (venueService.count() > 0) {
 				log.info("Database already populated with venues. Skipping venue initialization.");
@@ -43,7 +43,7 @@ public class InitialDataLoader {
 				log.info("Database already populated with events. Skipping event initialization.");
 			} else {
 				// Build and save initial events here.
-				log.info("Preloading: " + eService.save(new Event("Name", 0, LocalDate.now(), LocalTime.now())));
+				log.info("Preloading: " + eventService.save(new Event("Name", 0, LocalDate.now(), LocalTime.now())));
 			}
 		};
 	}
