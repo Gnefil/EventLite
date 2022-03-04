@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -32,6 +33,7 @@ public class Event {
 	private String name;
 
 	@ManyToOne
+	@JoinColumn(name="venue")
 	private Venue venue;
 
 	public Event() {

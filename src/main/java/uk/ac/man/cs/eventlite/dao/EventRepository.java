@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import uk.ac.man.cs.eventlite.entities.Event;
 
 public interface EventRepository extends CrudRepository<Event, Long>{
-
+//	public Iterable<Event> findAllAndSort();
 }

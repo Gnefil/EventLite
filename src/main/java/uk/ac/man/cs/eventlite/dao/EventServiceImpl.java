@@ -2,6 +2,7 @@ package uk.ac.man.cs.eventlite.dao;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.ac.man.cs.eventlite.entities.Event;
 
 @Service
-public class EventServiceImpl implements EventService {
+public class EventServiceImpl implements EventService{
 
 	private final static Logger log = LoggerFactory.getLogger(EventServiceImpl.class);
 
@@ -35,6 +36,16 @@ public class EventServiceImpl implements EventService {
 	public Iterable<Event> findAll() {
 		return eventRepository.findAll();
 	}
+	
+	@Override
+	public Iterable<Event> findAllAndSort() {
+		ArrayList<Event> events1 =(ArrayList<Event>) eventRepository.findAll();
+		Event[] events2 = (Event[]) events1.toArray();
+		Arrays.sort(events2, (a,b) -> (a.getDate().compareTo(b.getDate()) == 0) ? a.getTime().compareTo(b.getTime()) : a.getDate().compareTo(b.getDate()));
+		Iterable<Event> events = Arrays.asList(events2);
+		return events;
+	}
+	
 	
 	@Override
 	public Event save(Event event) {
