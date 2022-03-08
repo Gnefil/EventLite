@@ -51,4 +51,10 @@ public class EventServiceImpl implements EventService{
 	public Event save(Event event) {
 		return eventRepository.save(event);
 	}
+	
+	@Override
+	public Iterable<Event> search(String keyWords) {
+		
+		return null;
+	}
 }
