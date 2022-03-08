@@ -1,6 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -50,7 +51,7 @@ public class EventsController {
 	}
 	
 	@GetMapping(value="/search")
-	public String searchEventsByName(Model model, @RequestParam("keyWords") String keyWords) {
+	public String searchEventsByName(Model model, @Param("keyWords") String keyWords) {
 		model.addAttribute("eventsFound", eventService.search(keyWords));
 		
 		return "events/search";

@@ -3,19 +3,21 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default}">
 <head>
-  <title>All events</title>
+  <title>Search result</title>
 </head>
 <body>
   <div layout:fragment="content">
-    <h1>All events</h1>
-
-	<div class="search-container">
+    <h1>Search result</h1>
+    
+ 
+  
+  	<div class="search-container">
 		<form class="form-group" action="/events/search">
 			<input type="text" name="keyWords" placeholder="Event name...">
 			<button type="submit">Submit</button>
 		</form>
 	</div>
-
+	
     <table class="table table-striped table-hover">
       <thead>
         <tr>
@@ -26,17 +28,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr th:each="e : ${events}">
+        <tr th:each="e : ${eventsFound}">
           <td th:text="${e.name}">My Event</td>
 
-          <td th:text="${e.venue.name}">Event venue</td>
+          <td th:text="${e?.venue?.name}">Event venue</td>
           <td th:text="${{e.date}}">Event date</td>
           <td th:text="${{e.time}}">Event time</td>
         </tr>
       </tbody>
     </table>
-
-  </div>
+ 
+ </div>
 
 </body>
 </html>
