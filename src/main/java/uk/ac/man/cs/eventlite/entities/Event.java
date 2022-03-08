@@ -31,6 +31,8 @@ public class Event {
 	private LocalTime time;
 
 	private String name;
+	
+	private String description;
 
 	@ManyToOne
 	@JoinColumn(name="venue")
@@ -39,11 +41,12 @@ public class Event {
 	public Event() {
 	}
 	
-	public Event(String name, Venue venue, LocalDate date, LocalTime time) {
+	public Event(String name, Venue venue, LocalDate date, LocalTime time, String description) {
 		this.name = name;
 		this.venue = venue;
 		this.date = date;
 		this.time = time;
+		this.description = description;
 	}
 
 	public long getId() {
@@ -52,6 +55,14 @@ public class Event {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 
 	public LocalDate getDate() {

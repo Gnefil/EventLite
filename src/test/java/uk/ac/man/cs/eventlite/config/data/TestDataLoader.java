@@ -38,9 +38,9 @@ public class TestDataLoader {
 			Venue venue2 = new Venue("MECD", 200);
 			log.info("Preloading: " + venueService.save(venue1));
 			log.info("Preloading: " + venueService.save(venue2));
-			log.info("Preloading: " + eventService.save(new Event("Team Study", venue1, LocalDate.now(), LocalTime.now())));
-			log.info("Preloading: " + eventService.save(new Event("Lab", venue1, LocalDate.now(), LocalTime.now())));
-			log.info("Preloading: " + eventService.save(new Event("Lecture", venue2, LocalDate.now(), LocalTime.now())));
+			log.info("Preloading: " + eventService.save(new Event("Team Study", venue1, LocalDate.now(), LocalTime.now(), "Software Engineering")));
+			log.info("Preloading: " + eventService.save(new Event("Lab", venue1, LocalDate.now(), LocalTime.now(), "Computer Science")));
+			log.info("Preloading: " + eventService.save(new Event("Lecture", venue2, LocalDate.now(), LocalTime.now(), "Computer Science")));
 		};
 	}
 }

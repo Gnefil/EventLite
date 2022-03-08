@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
+import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.exceptions.EventNotFoundException;
 
 @Controller
@@ -47,4 +48,11 @@ public class EventsController {
 		return "events/index";
 	}
 
+	@GetMapping("/details/{id}")
+	public String getEventsDetails(@PathVariable("id") long id, Model model) {
+		Event e = eventService.getEventById(id);
+		if(e == null) throw new EventNotFoundException(id);
+		model.addAttribute("event", e);
+		return "events/details/index";
+	}
 }
