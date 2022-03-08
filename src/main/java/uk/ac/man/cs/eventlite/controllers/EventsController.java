@@ -50,7 +50,7 @@ public class EventsController {
 	}
 	
 	@GetMapping(value="/search")
-	public String searchEventsByName(Model model, @RequestParam String keyWords) {
+	public String searchEventsByName(Model model, @RequestParam("keyWords") String keyWords) {
 		model.addAttribute("eventsFound", eventService.search(keyWords));
 		
 		return "events/search";

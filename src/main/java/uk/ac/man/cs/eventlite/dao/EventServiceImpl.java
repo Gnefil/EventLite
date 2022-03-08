@@ -55,6 +55,8 @@ public class EventServiceImpl implements EventService{
 	@Override
 	public Iterable<Event> search(String keyWords) {
 		
-		return null;
+		String lowerCaseWords = keyWords.toLowerCase();
+		
+		return eventRepository.search(lowerCaseWords);
 	}
 }
