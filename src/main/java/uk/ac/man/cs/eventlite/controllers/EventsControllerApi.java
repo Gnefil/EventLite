@@ -3,6 +3,10 @@ package uk.ac.man.cs.eventlite.controllers;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.net.URI;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -10,10 +14,13 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import uk.ac.man.cs.eventlite.assemblers.EventModelAssembler;
@@ -49,4 +56,23 @@ public class EventsControllerApi {
 		return eventAssembler.toCollectionModel(eventService.findAll())
 				.add(linkTo(methodOn(EventsControllerApi.class).getAllEvents()).withSelfRel());
 	}
+	
+	@RequestMapping(value = "/newEvent", method = RequestMethod.GET)
+	public ResponseEntity<?> newEvent() {
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> createEvent(@RequestBody @Valid Event event, BindingResult result) {
+
+		if (result.hasErrors()) {
+			return ResponseEntity.unprocessableEntity().build();
+		}
+
+		eventService.save(event);
+		URI location = linkTo(EventsControllerApi.class).slash(event.getId()).toUri();
+
+		return ResponseEntity.created(location).build();
+	}
+
 }
