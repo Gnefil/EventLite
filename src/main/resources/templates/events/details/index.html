@@ -20,6 +20,7 @@
           <th><i class="fas fa-clock"></i> Description</th>
         </tr>
       </thead>
+      <br><br>
       <tbody>
         <tr>
           <td th:text="${event.name}">My Event</td>
@@ -31,6 +32,12 @@
         </tr>
       </tbody>
     </table>
-    
+    <center>
+    <div class="form-group">
+      <form th:action="@{/events/delete/{id}(id=${id})}" th:method="delete">
+      <button type="submit" class="btn btn-primary"><i class="fas fa-trash" aria-hidden="true"></i> Delete Event</button>
+      </form>
+    </div>
+    </center>
 </body>
 </html>
