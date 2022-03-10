@@ -16,6 +16,8 @@
           <th><i class="fas fa-map-marker-alt"></i> Venue</th>
           <th><i class="fas fa-calendar"></i> Date</th>
           <th><i class="fas fa-clock"></i> Time</th>
+          <th><i class="fas fa-edit"></i> Update</th>
+          <th><i class="fas fa-trash"></i> Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -25,6 +27,8 @@
           <td th:text="${e?.venue?.name}">Event venue</td>
           <td th:text="${{e.date}}">Event date</td>
           <td th:text="${{e.time}}">Event time</td>
+           <td><a th:href="@{/events/update/{id}(id=${e.id})}">Edit <i class="fas fa-pencil-alt"></i></a></td>
+           <td><a th:href="@{/events/delete/{id}(id=${e.id})}">Delete <i class="fas fa-trash"></i></a></td>
         </tr>
       </tbody>
     </table>

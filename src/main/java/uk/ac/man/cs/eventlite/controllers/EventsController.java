@@ -9,11 +9,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.exceptions.EventNotFoundException;
+
+import uk.ac.man.cs.eventlite.entities.Event;
 
 @Controller
 @RequestMapping(value = "/events", produces = { MediaType.TEXT_HTML_VALUE })
@@ -46,5 +51,24 @@ public class EventsController {
 
 		return "events/index";
 	}
+	
+	@GetMapping("update/{id}")
+	public String getEventUpdate(@PathVariable("id") long id, Model model) {
+		Event e = eventService.getEventById(id);
+		model.addAttribute("event", e);
+		model.addAttribute("allVenues", venueService.findAll());
+		return "events/update";
+	}
 
+	@RequestMapping(value="/update/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public String updateEvent(@PathVariable("id") Long id, Event event) {
+		Event e = eventService.getEventById(id);
+		e.setName(event.getName());
+		e.setDate(event.getDate());
+		e.setTime(event.getTime());
+		e.setVenue(event.getVenue());
+		eventService.save(e);
+		return "redirect:/events";
+	}
+	
 }

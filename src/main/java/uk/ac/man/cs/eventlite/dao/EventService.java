@@ -14,4 +14,6 @@ public interface EventService {
 	public Event save(Event event);
 
 	public Iterable<Event> findAllAndSort();
+	
+	public Event getEventById(long Event);
 }
