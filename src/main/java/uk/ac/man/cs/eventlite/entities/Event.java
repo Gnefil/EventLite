@@ -29,11 +29,12 @@ public class Event {
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime time;
+	private String summary;
 
 	private String name;
 	
 	private String description;
-
+	
 	@ManyToOne
 	@JoinColumn(name="venue")
 	private Venue venue;
@@ -47,6 +48,7 @@ public class Event {
 		this.date = date;
 		this.time = time;
 		this.description = description;
+		this.summary = name + " | " + venue.getName() + " | " + date.toString();
 	}
 
 	public long getId() {
@@ -95,5 +97,13 @@ public class Event {
 
 	public void setVenue(Venue venue) {
 		this.venue = venue;
+	}
+	
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
 }
