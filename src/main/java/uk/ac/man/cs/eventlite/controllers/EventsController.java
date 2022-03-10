@@ -41,7 +41,7 @@ public class EventsController {
 	@GetMapping
 	public String getAllEvents(Model model) {
 
-		model.addAttribute("events", eventService.findAll());
+		model.addAttribute("events", eventService.findAllAndSort());
 //		model.addAttribute("venues", venueService.findAll());
 
 		return "events/index";

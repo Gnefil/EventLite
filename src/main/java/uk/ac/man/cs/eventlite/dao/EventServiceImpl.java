@@ -3,6 +3,8 @@ package uk.ac.man.cs.eventlite.dao;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,11 +41,12 @@ public class EventServiceImpl implements EventService{
 	
 	@Override
 	public Iterable<Event> findAllAndSort() {
-		ArrayList<Event> events1 =(ArrayList<Event>) eventRepository.findAll();
-		Event[] events2 = (Event[]) events1.toArray();
-		Arrays.sort(events2, (a,b) -> (a.getDate().compareTo(b.getDate()) == 0) ? a.getTime().compareTo(b.getTime()) : a.getDate().compareTo(b.getDate()));
-		Iterable<Event> events = Arrays.asList(events2);
-		return events;
+		List<Event> events1 = (List<Event>) eventRepository.findAll();
+		Collections.sort(events1,new Comparator<Event>(){
+            public int compare(Event e1, Event e2){
+            	return e1.getDate().compareTo(e2.getDate());
+            }});
+		return events1;
 	}
 	
 	
