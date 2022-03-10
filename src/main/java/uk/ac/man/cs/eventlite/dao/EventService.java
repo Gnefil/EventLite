@@ -16,4 +16,8 @@ public interface EventService {
 	public Iterable<Event> findAllAndSort();
 	
 	public Iterable<Event> search(String keyWords);
+	
+	public Event getEventById(long id);
+
+	public void deleteById(long id);
 }

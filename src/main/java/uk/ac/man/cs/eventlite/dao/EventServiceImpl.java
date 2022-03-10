@@ -46,6 +46,10 @@ public class EventServiceImpl implements EventService{
 		return events;
 	}
 	
+	@Override
+	public Event getEventById(long id) {
+		return eventRepository.findById(id).orElse(null);
+	}
 	
 	@Override
 	public Event save(Event event) {
@@ -59,5 +63,10 @@ public class EventServiceImpl implements EventService{
 		String lowerCaseWords = keyWords.toLowerCase().trim();
 		
 		return eventRepository.search(lowerCaseWords);
+	}
+	
+	@Override
+	public void deleteById(long id) {
+		eventRepository.deleteById(id);
 	}
 }
