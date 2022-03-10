@@ -16,4 +16,6 @@ public interface EventService {
 	public Iterable<Event> findAllAndSort();
 	
 	public Event getEventById(long id);
+
+	public void deleteById(long id);
 }

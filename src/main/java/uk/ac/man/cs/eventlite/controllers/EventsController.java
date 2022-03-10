@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
@@ -55,4 +56,12 @@ public class EventsController {
 		model.addAttribute("event", e);
 		return "events/details/index";
 	}
+	
+	 @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+	 public String deleteById(@PathVariable("id") long id) {
+
+		eventService.deleteById(id);
+
+		return "redirect:/events";
+	} 
 }
