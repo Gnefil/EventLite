@@ -15,9 +15,13 @@ public interface EventService {
 
 	public Iterable<Event> findAllAndSort();
 	
+<<<<<<< HEAD
 	public Iterable<Event> search(String keyWords);
 	
 	public Event getEventById(long id);
 
 	public void deleteById(long id);
+=======
+	public Event getEventById(long Event);
+>>>>>>> refs/remotes/origin/update-an-event
 }
