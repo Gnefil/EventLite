@@ -14,14 +14,10 @@ public interface EventService {
 	public Event save(Event event);
 
 	public Iterable<Event> findAllAndSort();
-	
-<<<<<<< HEAD
+
 	public Iterable<Event> search(String keyWords);
 	
 	public Event getEventById(long id);
 
 	public void deleteById(long id);
-=======
-	public Event getEventById(long Event);
->>>>>>> refs/remotes/origin/update-an-event
 }

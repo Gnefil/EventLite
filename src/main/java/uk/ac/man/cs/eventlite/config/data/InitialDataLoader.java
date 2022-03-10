@@ -48,9 +48,9 @@ public class InitialDataLoader {
 				log.info("Database already populated with events. Skipping event initialization.");
 			} else {
 				// Build and save initial events here.
-				log.info("Preloading: " + eventService.save(new Event("Team Study", venue1, LocalDate.now(), LocalTime.now())));
-				log.info("Preloading: " + eventService.save(new Event("Lab", venue1, LocalDate.now(), LocalTime.now())));
-				log.info("Preloading: " + eventService.save(new Event("Lecture", venue2, LocalDate.now(), LocalTime.now())));
+				log.info("Preloading: " + eventService.save(new Event("Team Study", venue1, LocalDate.now(), LocalTime.now(), "")));
+				log.info("Preloading: " + eventService.save(new Event("Lab", venue1, LocalDate.now(), LocalTime.now(), "")));
+				log.info("Preloading: " + eventService.save(new Event("Lecture", venue2, LocalDate.now(), LocalTime.now(), "")));
 			}
 		};
 	}
