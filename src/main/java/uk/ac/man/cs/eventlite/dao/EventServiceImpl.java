@@ -57,6 +57,8 @@ public class EventServiceImpl implements EventService{
 	
 	@Override
 	public Event save(Event event) {
+		event.setSummary(event.getName() + " | " + event.getVenue().getName()
+				+ " | " + event.getDate().toString());
 		return eventRepository.save(event);
 	}
 	

@@ -90,6 +90,7 @@ public class EventsController {
 		e.setDate(event.getDate());
 		e.setTime(event.getTime());
 		e.setVenue(event.getVenue());
+		e.setSummary(e.getName() + " | " + e.getVenue().getName() + " | " + e.getDate().toString());
 		eventService.save(e);
 		return "redirect:/events";
 	}
