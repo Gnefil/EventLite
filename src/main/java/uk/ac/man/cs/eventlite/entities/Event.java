@@ -42,6 +42,34 @@ public class Event {
 	public Event() {
 	}
 	
+	// No time and description
+	public Event(String name, Venue venue, LocalDate date) {
+		this.name = name;
+		this.venue = venue;
+		this.date = date;
+		this.summary = name + " | " + venue.getName() + " | " + date.toString();
+	}
+	
+	// No time
+	public Event(String name, Venue venue, LocalDate date, String description) {
+		this.name = name;
+		this.venue = venue;
+		this.date = date;
+		this.description = description;
+		this.summary = name + " | " + venue.getName() + " | " + date.toString();
+	}
+	
+	// No description
+	public Event(String name, Venue venue, LocalDate date, LocalTime time) {
+		this.name = name;
+		this.venue = venue;
+		this.date = date;
+		this.time = time;
+		this.description = description;
+		this.summary = name + " | " + venue.getName() + " | " + date.toString();
+	}
+	
+	// Full constructor
 	public Event(String name, Venue venue, LocalDate date, LocalTime time, String description) {
 		this.name = name;
 		this.venue = venue;
