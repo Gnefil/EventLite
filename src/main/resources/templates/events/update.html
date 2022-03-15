@@ -38,6 +38,12 @@
 		</select>
       </div>
 
+	<div class="form-group" th:classappend="${#fields.hasErrors('description')}? has-error">
+        <label for="description">Event description:</label>
+        <textarea class="form-control" style="height: 50px; padding-bottom: 50px;" type="text" name="description" id="description" th:field="*{description}" th:placeholder=${event.description} autofocus="autofocus"></textarea>
+        <p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">errors</p>
+      </div>
+
       <button class="btn btn-primary" type="submit" ><i class="fas fa-save" aria-hidden="true"></i> Save</button>
       <a class="btn btn-warning" role="button" th:href="@{/events}"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>      
       </div>

@@ -81,18 +81,19 @@ public class EventsController {
 		eventService.deleteById(id);
 
 		return "redirect:/events";
-	} 
+	 } 
 	 
-	@RequestMapping(value="/update/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String updateEvent(@PathVariable("id") Long id, Event event) {
-		Event e = eventService.getEventById(id);
-		e.setName(event.getName());
-		e.setDate(event.getDate());
-		e.setTime(event.getTime());
-		e.setVenue(event.getVenue());
-		e.setSummary(e.getName() + " | " + e.getVenue().getName() + " | " + e.getDate().toString());
-		eventService.save(e);
-		return "redirect:/events";
+	 @RequestMapping(value="/update/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	 public String updateEvent(@PathVariable("id") Long id, Event event) {
+		 Event e = eventService.getEventById(id);
+		 e.setName(event.getName());
+		 e.setDate(event.getDate());
+		 e.setTime(event.getTime());
+		 e.setVenue(event.getVenue());
+		 e.setSummary(e.getName() + " | " + e.getVenue().getName() + " | " + e.getDate().toString());
+		 e.setDescription(event.getDescription());
+		 eventService.save(e);
+		 return "redirect:/events";
 	}
 	
 	@RequestMapping(value = "/newEvent", method = RequestMethod.GET)
