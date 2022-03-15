@@ -1,5 +1,10 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,8 +132,23 @@ public class EventsController {
 	
 	@GetMapping(value="/search")
 	public String searchEventsByName(Model model, @Param("keyWords") String keyWords) {
-		model.addAttribute("eventsFound", eventService.search(keyWords));
+		List<Event> upcoming = new ArrayList<Event>();
+		List<Event> previous = new ArrayList<Event>();
 		
+		for(Event event: eventService.search(keyWords)) {
+			if (event.getDate().isAfter(LocalDate.now())) {
+				upcoming.add(event);
+			} else {
+				previous.add(event);
+			}
+		}
+		
+		// Reorder the previous ones descending
+		Collections.sort(previous, (a, b)-> b.getDate().compareTo(a.getDate()));
+
+		model.addAttribute("eventsFoundUpcoming", upcoming);
+		model.addAttribute("eventsFoundPrevious", previous);
+
 		return "events/search";
 	}
 	
