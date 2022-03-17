@@ -9,6 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -22,17 +26,23 @@ public class Event {
 	@GeneratedValue
 	private long id;
 
+	@NotNull(message = "Date required")
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Future(message = "Date must be in the future")
 	private LocalDate date;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime time;
+	
 	private String summary;
 
+	@NotEmpty(message = "A name is required!")
+	@Size(max = 255, message = "This event name has to have at most 255 characters")
 	private String name;
 	
+	@Size(max = 500, message = "This event description has to have at most 500 characters")
 	private String description;
 	
 	@ManyToOne
@@ -42,10 +52,11 @@ public class Event {
 	public Event() {
 	}
 	
+
 	// No time and description
 	public Event(String name, Venue venue, LocalDate date) {
 		this.name = name;
-		this.venue = venue;
+		this.venue = venue;	
 		this.date = date;
 		this.summary = name + " | " + venue.getName() + " | " + date.toString();
 	}
