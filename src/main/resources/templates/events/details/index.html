@@ -9,7 +9,7 @@
   <div layout:fragment="content">
     <h1>Event details</h1>
     <h1 th:text="${event.name}"> Text</h1>
-    
+   	
     <table class="table table-striped table-hover">
       <thead>
         <tr>
@@ -32,12 +32,14 @@
         </tr>
       </tbody>
     </table>
-    <center>
-    <div class="form-group">
-      <form th:action="@{/events/delete/{id}(id=${id})}" th:method="delete">
-      <button type="submit" class="btn btn-primary"><i class="fas fa-trash" aria-hidden="true"></i> Delete Event</button>
-      </form>
+    <div sec:authorize="hasRole('ADMINISTRATOR')">
+	    <center>
+	    <div class="form-group">
+	      <form th:action="@{/events/delete/{id}(id=${id})}" th:method="delete">
+	      <button type="submit" class="btn btn-primary"><i class="fas fa-trash" aria-hidden="true"></i> Delete Event</button>
+	      </form>
+	    </div>
+	    </center>
     </div>
-    </center>
 </body>
 </html>
