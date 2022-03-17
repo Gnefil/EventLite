@@ -4,6 +4,26 @@
       layout:decorate="~{layouts/default}">
 <head>
   <title>All events</title>
+  <style>
+  	#container {
+	  height: 100%;
+	  width: 100%;
+	  display: flex;
+	}
+	#leftThing {
+	  width: 25%;
+	  background-color: blue;
+	  justify-content: space-around;
+	}
+	#content {
+	  width: 50%;
+	  background-color: green;
+	}
+	#rightThing {
+	  width: 25%;
+	  background-color: yellow;
+	}
+  </style>
 </head>
 <body>
   <div layout:fragment="content">
@@ -32,12 +52,18 @@
         </tr>
       </tbody>
     </table>
-    <center>
-    <div class="form-group">
+	<table>
+    <tr>
+    <td>
+      <a th:href="@{/events/update/{id}(id=${event.id})}" class="btn btn-primary"><i class="fas fa-pencil-alt" aria-hidden="true"></i> Edit </a>
+      </td>
+      <td>
       <form th:action="@{/events/delete/{id}(id=${id})}" th:method="delete">
-      <button type="submit" class="btn btn-primary"><i class="fas fa-trash" aria-hidden="true"></i> Delete Event</button>
+      <button type="submit" class="btn btn-danger"><i class="fas fa-trash" aria-hidden="true"></i> Delete Event</button>
       </form>
-    </div>
-    </center>
+      </td>
+      </tr>
+     </table>
+  
 </body>
 </html>
