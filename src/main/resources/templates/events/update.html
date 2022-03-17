@@ -15,7 +15,7 @@
 
       <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
         <label for="name">Name:</label><a class="text-danger"> *</a>
-        <input class="form-control" type="text" name="name" id="name" th:field="*{name}" th:placeholder=${event.name}  autofocus="autofocus" />
+        <input class="form-control" type="text" name="name" id="name" th:field="*{name}" th:placeholder=${event.name}  autofocus="autofocus" maxlength="255"/>
         <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p>
       </div>
 
@@ -36,6 +36,12 @@
         <select th:field="*{venue}" class="form-control">
           <option th:each="venue : ${allVenues}" th:value="${venue.id}" th:text="${venue.name} + ' (Capacity: ' + ${venue.capacity} + ')'"></option>
 		</select>
+      </div>
+
+	<div class="form-group" th:classappend="${#fields.hasErrors('description')}? has-error">
+        <label for="description">Event description:</label>
+        <textarea class="form-control" style="height: 50px; padding-bottom: 50px;" type="text" name="description" id="description" th:field="*{description}" th:placeholder=${event.description} autofocus="autofocus" maxlength="499"></textarea>
+        <p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">errors</p>
       </div>
 
       <button class="btn btn-primary" type="submit" ><i class="fas fa-save" aria-hidden="true"></i> Save</button>
