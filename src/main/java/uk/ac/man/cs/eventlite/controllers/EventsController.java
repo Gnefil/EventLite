@@ -57,8 +57,24 @@ public class EventsController {
 
 	@GetMapping
 	public String getAllEvents(Model model) {
+		List<Event> upcoming = new ArrayList<Event>();
+		List<Event> previous = new ArrayList<Event>();
+		
+		for(Event event: eventService.findAllAndSort()) {
+			if (event.getDate().isAfter(LocalDate.now())) {
+				upcoming.add(event);
+			} else {
+				previous.add(event);
+			}
+		}
+		
+		// Reorder the previous ones descending
+		Collections.sort(previous, (a, b)-> b.getDate().compareTo(a.getDate()));
 
-		model.addAttribute("events", eventService.findAllAndSort());
+		model.addAttribute("upcomingEvents", upcoming);
+		model.addAttribute("previousEvents", previous);
+
+//		model.addAttribute("events", eventService.findAllAndSort());
 //		model.addAttribute("venues", venueService.findAll());
 
 		return "events/index";
