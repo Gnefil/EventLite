@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -41,11 +42,30 @@ public class EventsControllerTest {
 	@Mock
 	private Venue venue;
 
+	/*
+	@Mock
+	private Iterable<Event> events;
+	*/
+
 	@MockBean
 	private EventService eventService;
 
 	@MockBean
 	private VenueService venueService;
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void getSearchWithEvents() throws Exception {
+		/*String keyWord = "event";
+		when(eventService.search(keyWord)).thenReturn(events);
+		*/	
+		mvc.perform(get("/events/search?keyWords=event").accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk())
+		.andExpect(view().name("events/search"))
+		.andExpect(handler().methodName("searchEventsByName"));
+		
+		verify(eventService).search("event");
+	}
 
 	@Test
 	public void getIndexWhenNoEvents() throws Exception {
@@ -81,4 +101,6 @@ public class EventsControllerTest {
 		mvc.perform(get("/events/99").accept(MediaType.TEXT_HTML)).andExpect(status().isNotFound())
 				.andExpect(view().name("events/not_found")).andExpect(handler().methodName("getEvent"));
 	}
+	
+
 }
