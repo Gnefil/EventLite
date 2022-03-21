@@ -65,11 +65,16 @@ public class EventsController {
 	}
 	
 	@GetMapping("update/{id}")
-	public String getEventUpdate(@PathVariable("id") long id, Model model) {
+	public String getEventUpdate(Model model, @PathVariable("id") Long id, RedirectAttributes redirectAttrs) {
 		Event e = eventService.getEventById(id);
+		if (e == null) {
+	 		redirectAttrs.addFlashAttribute("error_message", "event not found");
+	 	}
+	 	
 		model.addAttribute("event", e);
 		model.addAttribute("allVenues", venueService.findAll());
-		return "events/update";
+		
+        return "events/update";
 	}
 
 	@GetMapping("/details/{id}")
@@ -89,15 +94,22 @@ public class EventsController {
 	 } 
 	 
 	 @RequestMapping(value="/update/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	 public String updateEvent(@PathVariable("id") Long id, Event event) {
-		 Event e = eventService.getEventById(id);
+	 public String updateEvent(@RequestBody @Valid @ModelAttribute Event event, BindingResult errors, Model model, @PathVariable("id") long id, RedirectAttributes redirectAttrs ) {
+		 Event e = eventService.getEventById(id);	
+
+		 if (errors.hasErrors()) {
+			 model.addAttribute("event", event);
+			 model.addAttribute("allVenues", venueService.findAll());	
+			 return "events/update";
+		 }
 		 e.setName(event.getName());
 		 e.setDate(event.getDate());
 		 e.setTime(event.getTime());
 		 e.setVenue(event.getVenue());
-		 e.setSummary(e.getName() + " | " + e.getVenue().getName() + " | " + e.getDate().toString());
-		 e.setDescription(event.getDescription());
+		 e.setSummary(event.getSummary());
+		 e.setDescription(event.getDescription());	
 		 eventService.save(e);
+		 redirectAttrs.addFlashAttribute("ok_message", "Event updated.");	
 		 return "redirect:/events";
 	}
 	

@@ -7,7 +7,7 @@
 <body>
   <div layout:fragment="content">
     <h1>Update an event</h1>
-    <form  th:object="${event}" th:action="@{/events/update/}+${event.id}"  method="post">
+    <form  th:object="${event}" th:action="@{/events/update/}+${event.id}" action="#" method="post">
 
       <div class="form-group">
         <p class="text-danger">* Required</p>
@@ -15,7 +15,7 @@
 
       <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
         <label for="name">Name:</label><a class="text-danger"> *</a>
-        <input class="form-control" type="text" name="name" id="name" th:field="*{name}" th:placeholder=${event.name}  autofocus="autofocus" minlength="2" maxlength="255" required/>
+        <input class="form-control" type="text" name="name" id="name" th:field="*{name}" th:placeholder=${event.name}  autofocus="autofocus" />
         <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p>
       </div>
 
