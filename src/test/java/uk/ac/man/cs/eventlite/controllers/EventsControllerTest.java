@@ -48,22 +48,31 @@ public class EventsControllerTest {
 	@Mock
 	private Iterable<Event> events;
 
+	/*
+	@Mock
+	private Iterable<Event> events;
+	*/
+
 	@MockBean
 	private EventService eventService;
 
 	@MockBean
 	private VenueService venueService;
-
-//	@Test
-//	public void searchEventByName() throws Exception {
-//		when(eventService.search("event")).thenReturn(events);
-//		mvc.perform(get("/events/search?keyWords=event").accept(MediaType.TEXT_HTML))
-//			.andExpect(status().isOk())
-//			.andExpect(view().name("events/byName"))
-//			.andExpect(handler().methodName("getEventsByName"));
-//		verify(eventService).search("event");
-//	}
 	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void getSearchWithEvents() throws Exception {
+		/*String keyWord = "event";
+		when(eventService.search(keyWord)).thenReturn(events);
+		*/	
+		mvc.perform(get("/events/search?keyWords=event").accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk())
+		.andExpect(view().name("events/search"))
+		.andExpect(handler().methodName("searchEventsByName"));
+		
+		verify(eventService).search("event");
+	}
+
 	@Test
 	public void getIndexWhenNoEvents() throws Exception {
 		when(eventService.findAll()).thenReturn(Collections.<Event>emptyList());
@@ -136,4 +145,5 @@ public class EventsControllerTest {
 	
 		verify(eventService, never()).deleteById(1);
 	}
+
 }
