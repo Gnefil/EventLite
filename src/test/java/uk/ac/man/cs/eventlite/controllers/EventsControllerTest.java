@@ -60,7 +60,6 @@ public class EventsControllerTest {
 	private VenueService venueService;
 	
 	@Test
-	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
 	public void getSearchWithEvents() throws Exception {
 		/*String keyWord = "event";
 		when(eventService.search(keyWord)).thenReturn(events);
