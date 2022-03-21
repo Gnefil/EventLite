@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Search results</title>
+  <style>
+  	.search-container {
+  		padding: 10px 0px;
+  	}
+  </style>
+</head>
+<body>
+  <div layout:fragment="content">
+    <h1>Search result</h1>
+    
+	<div class="search-container">
+		<form class="form-horizontal" action="/events/search">
+			<div class="form-group">
+				<input type="text" class="form-control" name="keyWords" placeholder="Event name...">
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-warning">Search event</button>
+			</div>
+		</form>
+	</div>
+	
+	<div class="upcoming-events-container search-container">
+		<h3 class="h3">Upcoming events</h3>
+	
+	    <table class="table table-striped table-hover">
+	      <thead>
+	        <tr>
+	          <th><i class="fas fa-bolt"></i> Event</th>
+	          <th><i class="fas fa-map-marker-alt"></i> Venue</th>
+	          <th><i class="fas fa-calendar"></i> Date</th>
+	          <th><i class="fas fa-clock"></i> Time</th>
+	        </tr>
+	      </thead>
+	      <tbody>
+	        <tr th:each="e : ${eventsFoundUpcoming}">
+	          <td th:text="${e.name}">My Event</td>
+	          <td th:text="${e?.venue?.name}">Event venue</td>
+	          <td th:text="${{e.date}}">Event date</td>
+	          <td th:text="${{e.time}}">Event time</td>
+	        </tr>
+	      </tbody>
+	    </table>
+	    
+	</div>
+	
+		<div class="upcoming-events-container search-container">
+		<h3 class="h3">Previous events</h3>
+	
+	    <table class="table table-striped table-hover">
+	      <thead>
+	        <tr>
+	          <th><i class="fas fa-bolt"></i> Event</th>
+	          <th><i class="fas fa-map-marker-alt"></i> Venue</th>
+	          <th><i class="fas fa-calendar"></i> Date</th>
+	          <th><i class="fas fa-clock"></i> Time</th>
+	        </tr>
+	      </thead>
+	      <tbody>
+	        <tr th:each="e : ${eventsFoundPrevious}">
+	          <td th:text="${e.name}">My Event</td>
+	          <td th:text="${e?.venue?.name}">Event venue</td>
+	          <td th:text="${{e.date}}">Event date</td>
+	          <td th:text="${{e.time}}">Event time</td>
+	        </tr>
+	      </tbody>
+	    </table>
+	    
+	</div>
+ 
+ </div>
+
+</body>
+</html>
