@@ -165,7 +165,8 @@ public class EventsControllerTest {
 		verify(eventService, never()).deleteById(1);
 	}
 
-	@Test 
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
 	public void getUpdatingEvent() throws Exception{
 		when(eventService.getEventById(1)).thenReturn(event);
 
