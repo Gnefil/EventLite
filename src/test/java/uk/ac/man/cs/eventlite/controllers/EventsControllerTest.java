@@ -81,4 +81,14 @@ public class EventsControllerTest {
 		mvc.perform(get("/events/99").accept(MediaType.TEXT_HTML)).andExpect(status().isNotFound())
 				.andExpect(view().name("events/not_found")).andExpect(handler().methodName("getEvent"));
 	}
+	
+	@Test
+	public void getEventDetails() throws Exception {
+		when(eventService.getEventById(1)).thenReturn(event);
+		
+		mvc.perform(get("/events/details/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("events/details/index")).andExpect(handler().methodName("getEventsDetails"));
+		
+		verify(eventService).getEventById(1);
+	}
 }
