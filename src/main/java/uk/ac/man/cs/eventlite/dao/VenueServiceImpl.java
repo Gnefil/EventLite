@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.dao;
 import java.io.InputStream;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,6 +37,17 @@ public class VenueServiceImpl implements VenueService {
 	public Iterable<Venue> findAll() {
 		
 		return venueRepository.findAll();
+	}
+	
+	@Override
+	public Iterable<Venue> findAllAndSort() {
+		
+		List<Venue> venues = (List<Venue>) venueRepository.findAll();
+		Collections.sort(venues,new Comparator<Venue>(){
+            public int compare(Venue v1, Venue v2){
+            	return v1.getName().compareTo(v2.getName());
+            }});
+		return venues;
 	}
 	
 	@Override
