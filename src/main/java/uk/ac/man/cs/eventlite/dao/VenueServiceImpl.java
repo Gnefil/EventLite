@@ -43,5 +43,13 @@ public class VenueServiceImpl implements VenueService {
 		return venueRepository.save(venue);
 	}
 
+	@Override
+	public Iterable<Venue> search(String keyWords) {
+		// Format the key words input
+		String lowerCaseWords = keyWords.toLowerCase().trim();
+		
+		return venueRepository.search(lowerCaseWords);
+	}
+
 
 }
