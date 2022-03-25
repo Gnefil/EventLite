@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Future;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -37,9 +38,10 @@ public class Event {
 	private LocalTime time;
 	
 	private String summary;
-
+	
+	@NotBlank(message = "Name must not be blank")
 	@NotEmpty(message = "A name is required!")
-	@Size(max = 255, message = "This event name has to have at most 255 characters")
+	@Size(max = 255, min = 2, message = "This event name has to have at least 2 and at most 255 characters")
 	private String name;
 	
 	@Size(max = 500, message = "This event description has to have at most 500 characters")
@@ -55,7 +57,7 @@ public class Event {
 
 	// No time and description
 	public Event(String name, Venue venue, LocalDate date) {
-		this.name = name;
+		this.name = name.trim();
 		this.venue = venue;	
 		this.date = date;
 		this.summary = name + " | " + venue.getName() + " | " + date.toString();

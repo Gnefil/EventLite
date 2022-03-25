@@ -29,12 +29,12 @@ import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.exceptions.EventNotFoundException;
-
+import uk.ac.man.cs.eventlite.exceptions.VenueNotFoundException;
 import uk.ac.man.cs.eventlite.entities.Event;
 
 @Controller
-@RequestMapping(value = "/events", produces = { MediaType.TEXT_HTML_VALUE })
-public class EventsController {
+@RequestMapping(value = "/venues", produces = { MediaType.TEXT_HTML_VALUE })
+public class VenuesController {
 
 	@Autowired
 	private EventService eventService;
@@ -44,10 +44,10 @@ public class EventsController {
 
 	@ExceptionHandler(EventNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public String eventNotFoundHandler(EventNotFoundException ex, Model model) {
+	public String venueNotFoundHandler(VenueNotFoundException ex, Model model) {
 		model.addAttribute("not_found_id", ex.getId());
 
-		return "events/not_found";
+		return "venues/not_found";
 	}
 
 	@GetMapping("/{id}")
@@ -81,16 +81,11 @@ public class EventsController {
 	}
 	
 	@GetMapping("update/{id}")
-	public String getEventUpdate(Model model, @PathVariable("id") Long id, RedirectAttributes redirectAttrs) {
+	public String getEventUpdate(@PathVariable("id") long id, Model model) {
 		Event e = eventService.getEventById(id);
-		if (e == null) {
-	 		redirectAttrs.addFlashAttribute("error_message", "event not found");
-	 	}
-	 	
 		model.addAttribute("event", e);
 		model.addAttribute("allVenues", venueService.findAll());
-		
-        return "events/update";
+		return "events/update";
 	}
 
 	@GetMapping("/details/{id}")
@@ -110,22 +105,15 @@ public class EventsController {
 	 } 
 	 
 	 @RequestMapping(value="/update/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	 public String updateEvent(@RequestBody @Valid @ModelAttribute Event event, BindingResult errors, Model model, @PathVariable("id") long id, RedirectAttributes redirectAttrs ) {
-		 Event e = eventService.getEventById(id);	
-
-		 if (errors.hasErrors()) {
-			 model.addAttribute("event", event);
-			 model.addAttribute("allVenues", venueService.findAll());	
-			 return "events/update";
-		 }
+	 public String updateEvent(@PathVariable("id") Long id, Event event) {
+		 Event e = eventService.getEventById(id);
 		 e.setName(event.getName());
 		 e.setDate(event.getDate());
 		 e.setTime(event.getTime());
 		 e.setVenue(event.getVenue());
-		 e.setSummary(event.getSummary());
-		 e.setDescription(event.getDescription());	
+		 e.setSummary(e.getName() + " | " + e.getVenue().getName() + " | " + e.getDate().toString());
+		 e.setDescription(event.getDescription());
 		 eventService.save(e);
-		 redirectAttrs.addFlashAttribute("ok_message", "Event updated.");	
 		 return "redirect:/events";
 	}
 	
