@@ -32,14 +32,14 @@
 	      <thead>
 	        <tr>
 	          <th><i class="fas fa-bolt"></i> Venue</th>
-	          <th><i class="fas fa-map-marker-alt"></i> Address (Placeholder)</th>
+	          <th><i class="fas fa-map-marker-alt"></i> Address</th>
 	          <th><i class="fas fa-clock"></i> Capacity</th>
 	        </tr>
 	      </thead>
 	      <tbody>
 	        <tr th:each="v : ${venuesFound}">
 	          <td th:text="${v.name}">My Venue</td>
-	          <td th:text="${v.capacity}">Venue placeholder for address</td>
+	          <td th:text="${v.address}">Venue address</td>
 	          <td th:text="${{v.capacity}}">Venue capacity</td>
 	        </tr>
 	      </tbody>
