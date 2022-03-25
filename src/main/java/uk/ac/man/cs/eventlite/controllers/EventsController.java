@@ -141,16 +141,18 @@ public class EventsController {
 
 		return "events/newEvent";
 	}
+		
+	
+	
 	
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String createEvent(@RequestBody @Valid @ModelAttribute Event event, 
+	public String createEvent(@RequestBody @Valid @ModelAttribute Event event,
 			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
 
 		if (errors.hasErrors()) {
-			model.addAttribute("event", event);
-			model.addAttribute("venueList", venueService.findAll());
-
-			return "events/new";
+			model.addAttribute("events", event);
+			model.addAttribute("venues", venueService.findAll());
+			return "events/newEvent";
 		}
 
 		eventService.save(event);
@@ -158,6 +160,7 @@ public class EventsController {
 
 		return "redirect:/events";
 	}
+
 	
 	@GetMapping(value="/search")
 	public String searchEventsByName(Model model, @Param("keyWords") String keyWords) {
