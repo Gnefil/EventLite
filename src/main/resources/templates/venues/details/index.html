@@ -51,5 +51,12 @@
         </tr>
       </tbody>
     </table>
+    <center>
+    <div class="form-group">
+      <form th:action="@{/venues/delete/{num}(num=${id})}" th:method="delete">
+      <button type="submit" class="btn btn-primary"><i class="fas fa-trash" aria-hidden="true"></i> Delete venue</button>
+      </form>
+	</div>
+	</center>
 </body>
 </html>
