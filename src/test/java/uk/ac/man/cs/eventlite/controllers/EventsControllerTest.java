@@ -58,7 +58,10 @@ public class EventsControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
-
+	
+	private static final String char300 = 
+				 "wyjgzxxinwgxvuvhboshbvuaodazhoxfrifnltrcowwkvclnoamthmjfqhdjhvjbhhwmdxhhylvtabyibjlxwwxpilerohavykipurjtcdiubnpdjcfvwpkvbvpuvuwwuxzidpmgnyhvfotwptqpybefkyfsqeoelilspgprgjywuwlxxfxtpoaxeblchuvbnjckurnklfseomqoxuaqmeynbtsicfcvmuescoqerfmfqtqbxqpoorkiznhkwmfdyxmlygfyqehnwaqvartkuwzognsahflfxzcszkaisnbs";
+	private static final String char600 = char300 + char300 ;
 	@Mock
 	private Event event;
 	
@@ -238,4 +241,86 @@ public class EventsControllerTest {
 		.andExpect(handler().methodName("updateEvent"));
 		verify(eventService, never()).save(newEventArg.capture());
 	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void postCreateEventEmptyDate() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/events")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("id", "1").param("name", "EventName")
+				.param("time","08:00").param("description", "ok!").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+		.andExpect(view().name("events/newEvent"))
+		.andExpect(model().attributeHasFieldErrors("event", "date"))
+		.andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	
+	
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void postCreateEventBadDate() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/events")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		        .param("date", LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.param("id", "1").param("name", "EventName")
+				.param("time","08:00").param("description", "ok!").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+		.andExpect(view().name("events/newEvent"))
+		.andExpect(model().attributeHasFieldErrors("event", "date"))
+		.andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void postCreateEventBadName() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/events")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		        .param("date", LocalDate.now().minusDays(-11).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.param("id", "1").param("name", char300)
+				.param("time","08:00").param("description", "ok!").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+		.andExpect(view().name("events/newEvent"))
+		.andExpect(model().attributeHasFieldErrors("event", "name"))
+		.andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void postCreateEventEmptyName() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/events")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		        .param("date", LocalDate.now().minusDays(-11).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.param("id", "1").param("name", "")
+				.param("time","08:00").param("description", "ok!").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+		.andExpect(view().name("events/newEvent"))
+		.andExpect(model().attributeHasFieldErrors("event", "name"))
+		.andExpect(handler().methodName("createEvent"));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	@Test
+	public void postCreateEventLongDescription() throws Exception
+	{
+		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("id", "1").param("name", "EventName")
+				.param("date", "2019-01-01").param("time","10:30").param("description", char600)
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isOk()).andExpect(view().name("events/newEvent"))
+		.andExpect(model().attributeHasFieldErrors("event", "description"))
+		.andExpect(handler().methodName("createEvent"))
+		.andExpect(flash().attributeCount(0));
+
+		verify(eventService, never()).save(event);
+	}
+	
+	
+	
+	
+	
 }
