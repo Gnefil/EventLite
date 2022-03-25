@@ -15,7 +15,7 @@
       
       <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
         <label for="name">Name:</label><a class="text-danger"> *</a>
-        <input class="form-control" type="text" name="name" id="name" th:field="*{name}" th:placeholder=${venue.name}  autofocus="autofocus" required/>
+        <input class="form-control" type="text" name="name" id="name" th:field="*{name}" th:placeholder=${venue.name}  autofocus="autofocus"/>
         <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p>
       </div>
       

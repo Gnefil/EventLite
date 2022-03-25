@@ -106,7 +106,12 @@ public class VenuesController {
 	 } 
 	 
 	 @RequestMapping(value="/update/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	 public String updateVenue(@PathVariable("id") Long id, Venue venue) {
+	 public String updateVenue(@RequestBody @Valid @ModelAttribute Venue venue, BindingResult errors, Model model, @PathVariable("id") long id, RedirectAttributes redirectAttrs) {
+		 if (errors.hasErrors()) {
+			 model.addAttribute("venue", venue);
+			 return "venues/update";
+		 }
+		 
 		 Venue v = venueService.getVenueById(id);
 		 v.setName(venue.getName());
 		 v.setCapacity(venue.getCapacity());
