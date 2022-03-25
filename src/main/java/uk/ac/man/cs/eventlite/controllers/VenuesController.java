@@ -28,10 +28,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 import uk.ac.man.cs.eventlite.exceptions.EventNotFoundException;
 import uk.ac.man.cs.eventlite.exceptions.VenueNotFoundException;
-import uk.ac.man.cs.eventlite.entities.Event;
-
+import uk.ac.man.cs.eventlite.dao.EventRepository;
 @Controller
 @RequestMapping(value = "/venues", produces = { MediaType.TEXT_HTML_VALUE })
 public class VenuesController {
@@ -42,6 +42,9 @@ public class VenuesController {
 	@Autowired
 	private VenueService venueService;
 
+	@Autowired
+	private EventRepository eventRepository;
+	
 	@ExceptionHandler(EventNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public String venueNotFoundHandler(VenueNotFoundException ex, Model model) {
@@ -98,10 +101,22 @@ public class VenuesController {
 	
 	 @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
 	 public String deleteById(@PathVariable("id") long id) {
-
-		eventService.deleteById(id);
-
-		return "redirect:/events";
+		 boolean isVenueEmpty = true;
+		 
+		 Iterable<Event> events = eventRepository.findAll();
+		 
+		 for(Event event : events) {
+			 Venue venue = event.getVenue();
+			 
+			 if(venue.getId() == id) {
+				 isVenueEmpty = false;
+			 }
+		 }
+		 
+		 if(isVenueEmpty) {
+			 venueService.deleteById(id);
+		 }
+		return "redirect:/venues";
 	 } 
 	 
 	 @RequestMapping(value="/update/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
