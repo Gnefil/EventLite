@@ -12,6 +12,8 @@ public interface VenueService {
 	public Venue save(Venue venue);
 	
 	public Venue getVenueById(long id);
+	
+	public Iterable<Venue> search(String keyWords);
 
 	public void deleteById(long id);
 	

@@ -80,7 +80,7 @@ public class VenuesController {
 //		model.addAttribute("events", eventService.findAllAndSort());
 //		model.addAttribute("venues", venueService.findAll());
 
-		return "events/index";
+		return "venues/index";
 	}
 	
 	@GetMapping("update/{id}")
@@ -176,25 +176,11 @@ public class VenuesController {
 	}
 	
 	@GetMapping(value="/search")
-	public String searchEventsByName(Model model, @Param("keyWords") String keyWords) {
-		List<Event> upcoming = new ArrayList<Event>();
-		List<Event> previous = new ArrayList<Event>();
-		
-		for(Event event: eventService.search(keyWords)) {
-			if (event.getDate().isAfter(LocalDate.now())) {
-				upcoming.add(event);
-			} else {
-				previous.add(event);
-			}
-		}
-		
-		// Reorder the previous ones descending
-		Collections.sort(previous, (a, b)-> b.getDate().compareTo(a.getDate()));
+	public String searchVenuesByName(Model model, @Param("keyWords") String keyWords) {
 
-		model.addAttribute("eventsFoundUpcoming", upcoming);
-		model.addAttribute("eventsFoundPrevious", previous);
+		model.addAttribute("venuesFound", venueService.search(keyWords));
 
-		return "events/search";
+		return "venues/search";
 	}
 	
 }

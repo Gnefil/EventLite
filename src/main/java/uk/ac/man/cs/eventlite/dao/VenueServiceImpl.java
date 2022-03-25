@@ -54,5 +54,13 @@ public class VenueServiceImpl implements VenueService {
 		venueRepository.deleteById(id);
 	}
 
+	@Override
+	public Iterable<Venue> search(String keyWords) {
+		// Format the key words input
+		String lowerCaseWords = keyWords.toLowerCase().trim();
+		
+		return venueRepository.search(lowerCaseWords);
+	}
+
 
 }
