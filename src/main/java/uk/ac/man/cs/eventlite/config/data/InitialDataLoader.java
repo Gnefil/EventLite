@@ -34,8 +34,8 @@ public class InitialDataLoader {
 	@Bean
 	CommandLineRunner initDatabase() {
 		return args -> {
-			Venue A = new Venue("Venue A", 100);
-			Venue B = new Venue("Venue B", 200);
+			Venue A = new Venue("Venue A", 100, "Oxford Road");
+			Venue B = new Venue("Venue B", 200, "Oxford Road");
 
 			if (venueService.count() > 0) {
 				log.info("Database already populated with venues. Skipping venue initialization.");

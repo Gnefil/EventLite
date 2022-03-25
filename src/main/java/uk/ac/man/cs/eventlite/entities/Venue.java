@@ -18,6 +18,8 @@ public class Venue {
 	private long id;
 
 	private String name;
+	
+	private String address;
 
 	private int capacity;
 	
@@ -27,10 +29,19 @@ public class Venue {
 	public Venue() {
 	}
 	
-	public Venue(String name, int capacity) {
+	public Venue(String name, int capacity, String address) {
 		this.name = name;
 		this.capacity = capacity;
+		this.address = address;
 //		this.events = new HashSet<Event>();
+	}
+	
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	
+	public String getAddress() {
+		return this.address;
 	}
 
 	public long getId() {

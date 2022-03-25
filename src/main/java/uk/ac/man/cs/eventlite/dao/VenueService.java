@@ -12,6 +12,5 @@ public interface VenueService {
 
 	public void deleteById(long id);
 	
-
-
+	public Venue getVenueById(long id);
 }
