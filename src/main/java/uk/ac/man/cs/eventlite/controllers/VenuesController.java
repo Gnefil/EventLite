@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 import uk.ac.man.cs.eventlite.exceptions.EventNotFoundException;
 import uk.ac.man.cs.eventlite.exceptions.VenueNotFoundException;
 import uk.ac.man.cs.eventlite.entities.Event;
@@ -89,11 +90,21 @@ public class VenuesController {
 	}
 
 	@GetMapping("/details/{id}")
-	public String getEventsDetails(@PathVariable("id") long id, Model model) {
-		Event e = eventService.getEventById(id);
-		if(e == null) throw new EventNotFoundException(id);
-		model.addAttribute("event", e);
-		return "events/details/index";
+	public String getVenueDetails(@PathVariable("id") long id, Model model) {
+		Venue v = venueService.getVenueById(id);
+		if(v == null) throw new EventNotFoundException(id);
+		
+		List<Event> upcoming = new ArrayList<Event>();
+				
+		for(Event event: eventService.findAllAndSort()) {
+			if (event.getVenue() == v && event.getDate().isAfter(LocalDate.now())) 
+				upcoming.add(event);
+		}
+		
+		model.addAttribute("venue", v);
+		model.addAttribute("upcomingEvents", upcoming);
+		
+		return "venues/details/index";
 	}
 	
 	 @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)

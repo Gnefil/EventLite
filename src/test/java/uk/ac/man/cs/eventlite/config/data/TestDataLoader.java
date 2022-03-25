@@ -1,3 +1,5 @@
+
+
 package uk.ac.man.cs.eventlite.config.data;
 
 import java.time.LocalDate;
@@ -35,8 +37,8 @@ public class TestDataLoader {
 			// The test database is configured to reside in memory, so must be initialized
 			// every time.
 			
-			Venue A = new Venue("Venue A", 100);
-			Venue B = new Venue("Venue B", 200);
+			Venue A = new Venue("Venue A", 100, "Oxford Road");
+			Venue B = new Venue("Venue B", 200, "Oxford Road");
 			log.info("Preloading: " + venueService.save(A));
 			log.info("Preloading: " + venueService.save(B));
 			log.info("Preloading: " + eventService.save(new Event("Event Alpha", B, LocalDate.of(2022, 7, 11), LocalTime.of(12, 30), "Event Alpha is the first of its kind…")));
