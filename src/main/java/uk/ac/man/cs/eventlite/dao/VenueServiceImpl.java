@@ -43,6 +43,11 @@ public class VenueServiceImpl implements VenueService {
 	public Venue save(Venue venue) {
 		return venueRepository.save(venue);
 	}
+	
+	@Override
+	public Venue getVenueById(long id) {
+		return venueRepository.findById(id).orElse(null);
+	}
 
 	@Override
 	public void deleteById(long id) {

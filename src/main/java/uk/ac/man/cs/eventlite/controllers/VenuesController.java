@@ -84,11 +84,11 @@ public class VenuesController {
 	}
 	
 	@GetMapping("update/{id}")
-	public String getEventUpdate(@PathVariable("id") long id, Model model) {
-		Event e = eventService.getEventById(id);
-		model.addAttribute("event", e);
+	public String getVenueUpdate(@PathVariable("id") long id, Model model) {
+		Venue v = venueService.getVenueById(id);
+		model.addAttribute("venue", v);
 		model.addAttribute("allVenues", venueService.findAll());
-		return "events/update";
+		return "venues/update";
 	}
 
 	@GetMapping("/details/{id}")
@@ -130,15 +130,18 @@ public class VenuesController {
 	 } 
 	 
 	 @RequestMapping(value="/update/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	 public String updateEvent(@PathVariable("id") Long id, Event event) {
-		 Event e = eventService.getEventById(id);
-		 e.setName(event.getName());
-		 e.setDate(event.getDate());
-		 e.setTime(event.getTime());
-		 e.setVenue(event.getVenue());
-		 e.setSummary(e.getName() + " | " + e.getVenue().getName() + " | " + e.getDate().toString());
-		 e.setDescription(event.getDescription());
-		 eventService.save(e);
+	 public String updateVenue(@RequestBody @Valid @ModelAttribute Venue venue, BindingResult errors, Model model, @PathVariable("id") long id, RedirectAttributes redirectAttrs) {
+		 if (errors.hasErrors()) {
+			 model.addAttribute("venue", venue);
+			 return "venues/update";
+		 }
+		 
+		 Venue v = venueService.getVenueById(id);
+		 v.setName(venue.getName());
+		 v.setCapacity(venue.getCapacity());
+		 v.setRoadName(venue.getRoadName());
+		 v.setPostcode(venue.getPostcode());
+		 venueService.save(v);
 		 return "redirect:/events";
 	}
 	
