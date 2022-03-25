@@ -54,8 +54,5 @@ public class VenueServiceImpl implements VenueService {
 		venueRepository.deleteById(id);
 	}
 
-	public Venue getVenueById(long id) {
-		return venueRepository.findById(id).orElse(null);
-	}
 
 }
