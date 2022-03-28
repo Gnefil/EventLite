@@ -1,5 +1,6 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+<<<<<<< HEAD
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +52,13 @@ public class VenuesController {
 		model.addAttribute("not_found_id", ex.getId());
 
 		return "venues/not_found";
+	}
+
+	@RequestMapping(method = RequestMethod.GET)
+	public String getAllVenus(Model model) {
+
+		model.addAttribute("venues", venueService.findAllAndSort());
+		return "venues/index";
 	}
 
 	/*
@@ -200,6 +208,4 @@ public class VenuesController {
 		
 		return "redirect:/events";
 	}
-	
-	
 }
