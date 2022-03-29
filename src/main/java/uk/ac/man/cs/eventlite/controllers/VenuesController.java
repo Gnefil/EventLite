@@ -1,6 +1,5 @@
 package uk.ac.man.cs.eventlite.controllers;
 
-<<<<<<< HEAD
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
