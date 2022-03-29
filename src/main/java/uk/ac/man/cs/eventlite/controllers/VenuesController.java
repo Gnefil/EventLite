@@ -41,9 +41,8 @@ public class VenuesController {
 
 	@Autowired
 	private VenueService venueService;
-
-	@Autowired
-	private EventRepository eventRepository;
+	
+	String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiYXNvbGkiLCJhIjoiY2wxYWl3NzUyMXk3bTNpc2d4a3BrYmlpMiJ9.T1Lq2KsPQlAuWIAhg1Lh2g";
 	
 	@ExceptionHandler(EventNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
@@ -122,7 +121,7 @@ public class VenuesController {
 	 public String deleteById(@PathVariable("id") long id) {
 		 boolean isVenueEmpty = true;
 		 
-		 Iterable<Event> events = eventRepository.findAll();
+		 Iterable<Event> events = eventService.findAll();
 		 
 		 for(Event event : events) {
 			 Venue venue = event.getVenue();
@@ -201,7 +200,10 @@ public class VenuesController {
 			
 			return "venues/newVenue";
 		}
-
+		
+		venue = venueService.geocode(venue, MAPBOX_ACCESS_TOKEN);
+		venueService.save(venue);
+		
 		venueService.save(venue);
 		redirectAttrs.addFlashAttribute("ok_message", "New venue added.");	
 		

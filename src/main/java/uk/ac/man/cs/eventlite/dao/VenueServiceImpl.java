@@ -14,7 +14,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
+import com.mapbox.geojson.Point;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
@@ -72,6 +79,43 @@ public class VenueServiceImpl implements VenueService {
 		String lowerCaseWords = keyWords.toLowerCase().trim();
 		
 		return venueRepository.search(lowerCaseWords);
+	}
+
+	@Override
+	// Turn an address into a geological coordinates (latitude and longitude) with MapBox API
+	public Venue geocode(Venue venue, String token) {
+		MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
+				.accessToken(token)
+				.query(venue.getRoadName()+" "+venue.getPostcode())
+				.build();
+		
+		mapboxGeocoding.enqueueCall(new Callback<GeocodingResponse>() {
+			@Override
+			public void onResponse(Call<GeocodingResponse> call, Response<GeocodingResponse> response) {
+		 
+				List<CarmenFeature> results = response.body().features();
+		 
+				if (results.size() > 0) {
+		 
+					// Set the longitude and latitude of the venue based on the result
+					Point firstResultPoint = results.get(0).center();
+					venue.setLatitude(firstResultPoint.latitude());
+					venue.setLongitude(firstResultPoint.longitude());
+		 
+				} else {
+		 
+					// No result for your request were found.
+					System.out.println("MapBox API onResponse: No result found");
+		 
+				}
+			}
+		 
+			@Override
+			public void onFailure(Call<GeocodingResponse> call, Throwable throwable) {
+				throwable.printStackTrace();
+			}
+		});
+		return null;
 	}
 
 

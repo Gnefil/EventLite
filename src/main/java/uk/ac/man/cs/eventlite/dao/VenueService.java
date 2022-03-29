@@ -1,5 +1,7 @@
 package uk.ac.man.cs.eventlite.dao;
 
+import javax.validation.Valid;
+
 import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
@@ -18,4 +20,6 @@ public interface VenueService {
 	public void deleteById(long id);
 	
 	Iterable<Venue> findAllAndSort();
+
+	public Venue geocode(Venue venue, String token);
 }
