@@ -115,7 +115,16 @@ public class VenueServiceImpl implements VenueService {
 				throwable.printStackTrace();
 			}
 		});
-		return null;
+		
+		// Wait for the response during 1 second time
+		try {
+			Thread.sleep(1000L);
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("Interrupted sleep in geocode.");
+		}
+		
+		return venue;
 	}
 
 
