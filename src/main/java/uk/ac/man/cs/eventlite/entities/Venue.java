@@ -41,6 +41,8 @@ public class Venue {
 	@Min(value = 0, message = "Venue capacity must be a positive integer")
 	private int capacity;
 	
+	private double latitude;
+	private double longitude;	
 	
 //	@OneToMany
 //	private Set<Event> events;
@@ -108,6 +110,22 @@ public class Venue {
 
 	public void setPostcode(String postcode) {
 		this.postcode = postcode;
+	}
+	
+	public Double getLatitude() {
+		return latitude;
+	}
+	
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+	
+	public Double getLongitude() {
+		return longitude;
+	}
+	
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 
 }

@@ -37,10 +37,21 @@ public class TestDataLoader {
 			// The test database is configured to reside in memory, so must be initialized
 			// every time.
 			
-			Venue A = new Venue("Venue A", "Oxford Road", 100);
-			Venue B = new Venue("Venue B", "Oxford Road", 200);
+			Venue A = new Venue("Venue A", "23 Manchester Road", "E14 3BD", 50);
+			A.setLatitude(51.48764591576528);
+			A.setLongitude(0.012130553645957599);
+			
+			Venue B = new Venue("Venue B", "Highland Road", "S43 2EZ", 1000);
+			B.setLatitude(53.279748907167544);
+			B.setLongitude(-1.4016698156695326);
+			
+			Venue C = new Venue("Venue C", "19 Acacia Avenue", "WA15 8QY", 10);
+			C.setLatitude(53.38209646705332);
+			C.setLongitude(-2.3373165003209593);
+			
 			log.info("Preloading: " + venueService.save(A));
 			log.info("Preloading: " + venueService.save(B));
+			log.info("Preloading: " + venueService.save(C));
 			log.info("Preloading: " + eventService.save(new Event("Event Alpha", B, LocalDate.of(2022, 7, 11), LocalTime.of(12, 30), "Event Alpha is the first of its kind…")));
 			log.info("Preloading: " + eventService.save(new Event("Event Beta", A, LocalDate.of(2022, 7, 11), LocalTime.of(10, 0), "Event Beta is not the first of its kind…")));
 			log.info("Preloading: " + eventService.save(new Event("Event Apple", A, LocalDate.of(2022, 7, 12), "Event Apple will be host to some of the world’s best iOS developers…"))); // No time

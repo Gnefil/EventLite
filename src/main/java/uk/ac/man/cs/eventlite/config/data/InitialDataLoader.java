@@ -36,8 +36,16 @@ public class InitialDataLoader {
 		return args -> {
 
 			Venue A = new Venue("Venue A", "23 Manchester Road", "E14 3BD", 50);
+			A.setLatitude(51.48764591576528);
+			A.setLongitude(0.012130553645957599);
+			
 			Venue B = new Venue("Venue B", "Highland Road", "S43 2EZ", 1000);
+			B.setLatitude(53.279748907167544);
+			B.setLongitude(-1.4016698156695326);
+			
 			Venue C = new Venue("Venue C", "19 Acacia Avenue", "WA15 8QY", 10);
+			C.setLatitude(53.38209646705332);
+			C.setLongitude(-2.3373165003209593);
 
 			if (venueService.count() > 0) {
 				log.info("Database already populated with venues. Skipping venue initialization.");
