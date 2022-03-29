@@ -51,12 +51,28 @@
         </tr>
       </tbody>
     </table>
-    <center>
+<!--     <center>
     <div class="form-group">
       <form th:action="@{/venues/delete/{num}(num=${id})}" th:method="delete">
       <button type="submit" class="btn btn-primary"><i class="fas fa-trash" aria-hidden="true"></i> Delete venue</button>
       </form>
 	</div>
-	</center>
+	</center> --> 
+	
+	<div sec:authorize="hasRole('ADMINISTRATOR')">
+		<table>
+    	<tr>
+    	<td>
+      	<a th:href="@{/venues/update/{num}(num=${id})}" class="btn btn-primary"><i class="fas fa-pencil-alt" aria-hidden="true"></i> Edit </a>
+      	</td>
+      	<td>
+      	<form th:action="@{/venues/delete/{num}(num=${id})}" th:method="delete">
+      	<button type="submit" class="btn btn-danger"><i class="fas fa-trash" aria-hidden="true"></i> Delete Event</button>
+      	</form>
+      	</td>
+      	</tr>
+     	</table>
+  	</div>
+	
 </body>
 </html>

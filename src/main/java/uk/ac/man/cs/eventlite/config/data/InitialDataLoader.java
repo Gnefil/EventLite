@@ -34,6 +34,7 @@ public class InitialDataLoader {
 	@Bean
 	CommandLineRunner initDatabase() {
 		return args -> {
+
 			Venue A = new Venue("Venue A", "23 Manchester Road", "E14 3BD", 50);
 			Venue B = new Venue("Venue B", "Highland Road", "S43 2EZ", 1000);
 			Venue C = new Venue("Venue C", "19 Acacia Avenue", "WA15 8QY", 10);
@@ -42,6 +43,7 @@ public class InitialDataLoader {
 				log.info("Database already populated with venues. Skipping venue initialization.");
 			} else {
 				// Build and save initial venues here.
+
 				log.info("Preloading: " + venueService.save(A));
 				log.info("Preloading: " + venueService.save(B));
 				log.info("Preloading: " + venueService.save(C));

@@ -1,5 +1,6 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+<<<<<<< HEAD
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,6 +54,14 @@ public class VenuesController {
 		return "venues/not_found";
 	}
 
+	@RequestMapping(method = RequestMethod.GET)
+	public String getAllVenus(Model model) {
+
+		model.addAttribute("venues", venueService.findAllAndSort());
+		return "venues/index";
+	}
+
+	/*
 	@GetMapping("/{id}")
 	public String getEvent(@PathVariable("id") long id, Model model) {
 		throw new EventNotFoundException(id);
@@ -82,6 +91,7 @@ public class VenuesController {
 
 		return "venues/index";
 	}
+	*/
 	
 	@GetMapping("update/{id}")
 	public String getVenueUpdate(@PathVariable("id") long id, Model model) {
@@ -142,38 +152,29 @@ public class VenuesController {
 		 v.setRoadName(venue.getRoadName());
 		 v.setPostcode(venue.getPostcode());
 		 venueService.save(v);
-		 return "redirect:/events";
+		 return "redirect:/venues";
 	}
 	
-	@RequestMapping(value = "/newEvent", method = RequestMethod.GET)
-	public String newEvent(Model model) {
-		if (!model.containsAttribute("event")) {
-			model.addAttribute("event", new Event());
-		}
-
-		if (!model.containsAttribute("venueList")) {
-			model.addAttribute("venueList", venueService.findAll());
-		}
-
-		return "events/newEvent";
-	}
-	
-	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String createEvent(@RequestBody @Valid @ModelAttribute Event event, 
-			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
-
-		if (errors.hasErrors()) {
-			model.addAttribute("event", event);
-			model.addAttribute("venueList", venueService.findAll());
-
-			return "events/new";
-		}
-
-		eventService.save(event);
-		redirectAttrs.addFlashAttribute("ok_message", "New event added.");
-
-		return "redirect:/events";
-	}
+	 
+//	@RequestMapping(value = "/newVenue", method = RequestMethod.GET)
+//	public String newVenue(Model model) {
+//		if (!model.containsAttribute("venue")) {
+//			model.addAttribute("venue", new Venue());
+//		}
+//		return "venues/newVenue";
+//	}
+//	
+//	
+//	@RequestMapping(value="/newVenue", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+//	 public String createVenue(@RequestBody @Valid @ModelAttribute Venue venue, BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
+//		 if (errors.hasErrors()) {
+//			 model.addAttribute("venue", venue);
+//			 return "venues/newVenue";
+//		 }
+//		 venueService.save(venue);
+//		 return "redirect:/venues/update/" + venue.getId();
+//	}
+//	
 	
 	@GetMapping(value="/search")
 	public String searchVenuesByName(Model model, @Param("keyWords") String keyWords) {
@@ -183,4 +184,28 @@ public class VenuesController {
 		return "venues/search";
 	}
 	
+	@RequestMapping(value = "/newVenue", method = RequestMethod.GET)
+	public String newVenue(Model model) {
+		if (!model.containsAttribute("venue")) {
+			model.addAttribute("venue", new Venue());
+		}
+
+		return "venues/newVenue";
+	}
+	
+	@RequestMapping(value="/newVenue", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public String createVenue(@RequestBody @Valid @ModelAttribute Venue venue, 
+			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
+
+		if (errors.hasErrors()) {
+			model.addAttribute("venue", venue);
+			
+			return "venues/newVenue";
+		}
+
+		venueService.save(venue);
+		redirectAttrs.addFlashAttribute("ok_message", "New venue added.");	
+		
+		return "redirect:/events";
+	}
 }
