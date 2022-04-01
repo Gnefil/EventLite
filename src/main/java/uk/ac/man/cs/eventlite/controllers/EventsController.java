@@ -99,8 +99,13 @@ public class EventsController {
 	@GetMapping("/details/{id}")
 	public String getEventsDetails(@PathVariable("id") long id, Model model) {
 		Event e = eventService.getEventById(id);
+		
 		if(e == null) throw new EventNotFoundException(id);
+		
 		model.addAttribute("event", e);
+		model.addAttribute("latit", e.getVenue().getLatitude());
+		model.addAttribute("longtit", e.getVenue().getLongitude());
+		
 		return "events/details/index";
 	}
 	

@@ -34,7 +34,7 @@ public class InitialDataLoader {
 	@Bean
 	CommandLineRunner initDatabase() {
 		return args -> {
-
+			// Pretty clean stuff Lifeng
 			Venue A = new Venue("Venue A", "23 Manchester Road", "E14 3BD", 50);
 			A.setLatitude(51.48764591576528);
 			A.setLongitude(0.012130553645957599);

@@ -1,50 +1,105 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/default}">
-<head>
-  <title>All events</title>
-</head>
-<body>
-  <div layout:fragment="content">
-    <h1>Event details</h1>
-    <h1 th:text="${event.name}"> Text</h1>
-    
-    <table class="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th><i class="fas fa-bolt"></i> Event</th>
-          <th><i class="fas fa-map-marker-alt"></i> Venue</th>
-          <th><i class="fas fa-calendar"></i> Date</th>
-          <th><i class="fas fa-clock"></i> Time</th>
-          <th><i class="fas fa-clock"></i> Description</th>
-        </tr>
-      </thead>
-      <br><br>
-      <tbody>
-        <tr>
-          <td th:text="${event.name}">My Event</td>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/default}">
 
-          <td th:text="${event?.venue?.name}">Event venue</td>
-          <td th:text="${{event.date}}">Event date</td>
-          <td th:text="${{event.time}}">Event time</td>
-          <td th:text="${{event.description}}">Event description</td>
-        </tr>
-      </tbody>
-    </table>
-    <div sec:authorize="hasRole('ADMINISTRATOR')">
-		<table>
-    	<tr>
-    	<td>
-      	<a th:href="@{/events/update/{id}(id=${event.id})}" class="btn btn-primary"><i class="fas fa-pencil-alt" aria-hidden="true"></i> Edit </a>
-      	</td>
-      	<td>
-      	<form th:action="@{/events/delete/{id}(id=${id})}" th:method="delete">
-      	<button type="submit" class="btn btn-danger"><i class="fas fa-trash" aria-hidden="true"></i> Delete Event</button>
-      	</form>
-      	</td>
-      	</tr>
-     	</table>
-  	</div>
+<head>
+    <meta charset=utf-8 />
+    <title>Event Details</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.mapbox.com/mapbox.js/v3.3.0/mapbox.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/v3.3.0/mapbox.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+  #map-container { 
+  	margin:0;
+  	margin-bottom:650px;
+  	padding:0; 
+  }
+  #map {
+  	position:absolute;
+  	width:1100px;
+  	height:600px
+  }
+
+  .mapboxgl-popup { 
+  	max-width: 200px;
+  }
+  .mapboxgl-popup-content {
+  	text-align: center;
+  	font-family: 'Open Sans', sans-serif;
+  }
+</style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <center><h1 th:text="${event.name}"> Text</h1></center>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-bolt"></i> Event</th>
+                    <th><i class="fas fa-map-marker-alt"></i> Venue</th>
+                    <th><i class="fas fa-calendar"></i> Date</th>
+                    <th><i class="fas fa-clock"></i> Time</th>
+                    <th><i class="fas fa-clock"></i> Description</th>
+                </tr>
+            </thead>
+            <br><br>
+            <tbody>
+                <tr>
+                    <td th:text="${event.name}">My Event</td>
+                    <td th:text="${event?.venue?.name}">Event venue</td>
+                    <td th:text="${{event.date}}">Event date</td>
+                    <td th:text="${{event.time}}">Event time</td>
+                    <td th:text="${{event.description}}">Event description</td>
+                </tr>
+            </tbody>
+        </table>
+        <div sec:authorize="hasRole('ADMINISTRATOR')">
+            <table>
+                <tr>
+                    <td>
+                        <a th:href="@{/events/update/{id}(id=${event.id})}" class="btn btn-primary"><i class="fas fa-pencil-alt" aria-hidden="true"></i> Edit </a>
+                    </td>
+                    <td>
+                        <form th:action="@{/events/delete/{id}(id=${id})}" th:method="delete">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash" aria-hidden="true"></i> Delete Event</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id='map-container'>
+            <div id='map'></div>
+        </div>
+        <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        var latit = /*[[${latit}]]*/ 0;
+        var longtit = /*[[${longtit}]]*/ 0;
+        var name = /*[[${event.name}]]*/ 'NO name';
+        var time = /*[[${event.time}]]*/ 0;
+        
+
+        L.mapbox.accessToken = 'pk.eyJ1IjoiYXNvbGkiLCJhIjoiY2wxYWl3NzUyMXk3bTNpc2d4a3BrYmlpMiJ9.T1Lq2KsPQlAuWIAhg1Lh2g';
+        var map = L.mapbox.map('map')
+            .setView([latit, longtit], 15)
+            .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
+
+        var popup = L.popup()
+            .setContent('<p>' + name + '</p>' + '</br>' + '<p>Starts at ' + time + '</p>');
+
+        var marker = L.marker([latit, longtit], {
+            icon: L.mapbox.marker.icon({
+                'marker-size': 'large',
+                'marker-symbol': 'bar',
+                'marker-color': '#fa0'
+            })
+        }).bindPopup(popup).addTo(map);
+
+
+        /*]]>*/
+        </script>
+    </div>
 </body>
+
 </html>
