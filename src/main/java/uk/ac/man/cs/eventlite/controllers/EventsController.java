@@ -77,8 +77,6 @@ public class EventsController {
 		model.addAttribute("upcomingEvents", upcoming);
 		model.addAttribute("previousEvents", previous);
 
-//		model.addAttribute("events", eventService.findAllAndSort());
-//		model.addAttribute("venues", venueService.findAll());
 
 		return "events/index";
 	}
