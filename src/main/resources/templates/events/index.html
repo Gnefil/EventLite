@@ -86,13 +86,12 @@
             <script th:inline="javascript" th:each="e : ${upcomingEvents}">
             /*<![CDATA[*/
             var name = /*[[${e.name}]]*/ 0;
-             var time = /*[[${event.time}]]*/ 0;
             var latit = /*[[${e.venue.latitude}]]*/ 0;
             var longtit = /*[[${e.venue.longitude}]]*/ 0;
 
 
             var popup = L.popup()
-                .setContent('<p>' + name + '</p>' + '</br>' + '<p>Starts at ' + time + '</p>');;
+                .setContent('<p>' + name + '</p>');;
 
             var marker = L.marker([latit, longtit], {
                 icon: L.mapbox.marker.icon({
