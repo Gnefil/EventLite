@@ -68,6 +68,9 @@
                 </tr>
             </table>
         </div>
+        
+
+        
         <div id='map-container'>
             <div id='map'></div>
         </div>
@@ -77,6 +80,7 @@
         var latit = /*[[${latit}]]*/ 0;
         var longtit = /*[[${longtit}]]*/ 0;
         var name = /*[[${event.name}]]*/ 'NO name';
+        var time = /*[[${event.time}]]*/ 0;
         
 
         L.mapbox.accessToken = 'pk.eyJ1IjoiYXNvbGkiLCJhIjoiY2wxYWl3NzUyMXk3bTNpc2d4a3BrYmlpMiJ9.T1Lq2KsPQlAuWIAhg1Lh2g';
@@ -85,7 +89,7 @@
             .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
 
         var popup = L.popup()
-            .setContent('<p>' + name + '</p>');
+            .setContent('<p>' + name + '</p>' + '</br>' + '<p>Starts at ' + time + '</p>');
 
         var marker = L.marker([latit, longtit], {
             icon: L.mapbox.marker.icon({

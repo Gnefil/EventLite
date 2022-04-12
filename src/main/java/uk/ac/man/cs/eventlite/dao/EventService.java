@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.dao;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import twitter4j.TwitterException;
 import uk.ac.man.cs.eventlite.entities.Event;
 
 public interface EventService {
@@ -20,4 +21,6 @@ public interface EventService {
 	public Event getEventById(long id);
 
 	public void deleteById(long id);
+
+	public String shareTweet(String tweet) throws TwitterException;
 }
