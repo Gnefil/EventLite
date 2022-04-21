@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default}">
 <head>
-  <title>All events</title>
+  <title>All venues</title>
 </head>
 <body>
   <div layout:fragment="content">
@@ -13,16 +13,16 @@
       <thead>
         <tr>
           <th><i class="fas fa-bolt"></i> Venue</th>
-          <th><i class="fas fa-map-marker-alt"></i> Capacity </th>
           <th><i class="fas fa-calendar"></i> Address</th>
+          <th><i class="fas fa-map-marker-alt"></i> Capacity </th>
       </tr>
       </thead>
       <br><br>
       <tbody>
         <tr>
-          <td th:text="${venue.name}">My Event</td>
-          <td th:text="${{venue.capacity}}">Event date</td>
-          <td th:text="${{venue.address}}">Event time</td>
+          <td th:text="${venue.name}">Venue</td>
+          <td th:text="${venue.roadName + ', ' + venue.postcode}">Venue address</td>
+          <td th:text="${venue.capacity}">Venue capacity</td>
         </tr>
       </tbody>
     </table>
