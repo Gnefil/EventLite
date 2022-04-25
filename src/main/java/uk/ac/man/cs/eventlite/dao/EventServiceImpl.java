@@ -93,17 +93,9 @@ public class EventServiceImpl implements EventService{
 	}
 	
 	@Override
-	public String shareTweet(String tweet) throws TwitterException {
-//		ConfigurationBuilder cb = new ConfigurationBuilder();
-//		cb.setDebugEnabled(true)
-//		.setOAuthConsumerKey("mKApDPniO5QWZi22nl3z5jr08")
-//		.setOAuthConsumerSecret("sR3kRsjHRTNFUrgTLeQ1b1d3sgfLzkIS2Pt1TPU7Gz00pWMX1S")
-//		.setOAuthAccessToken("1509910249016336400-LKKOw6E19ASF19iRrNmJvnMEvfZ7Py")
-//		.setOAuthAccessTokenSecret("zxyVBvQUxOvp8qJ48bm47nD1WSbEbGYU5g2rEF5SeIfBc");
-//		TwitterFactory tf = new TwitterFactory(cb.build());
+	public void shareTweet(String tweet) throws TwitterException {
 		Twitter twitter = getTwitterInstance();
 		twitter.updateStatus(tweet);
-		return "done";
 	}
 	
 	@Override

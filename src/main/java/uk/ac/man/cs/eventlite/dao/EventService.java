@@ -24,7 +24,7 @@ public interface EventService {
 
 	public void deleteById(long id);
 
-	public String shareTweet(String tweet) throws TwitterException;
+	public void shareTweet(String tweet) throws TwitterException;
 	
 	List<Status> getLastFiveTweetsFromTimeline() throws TwitterException;
 }

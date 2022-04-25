@@ -194,8 +194,7 @@ public class EventsController {
 	public String updateStatusOnTwitter(@PathVariable("id") Long id, String tweet, RedirectAttributes redirectAttrs) {
 		try {
 			eventService.shareTweet(tweet);
-			redirectAttrs.addFlashAttribute("tweetResponse",tweet);
-
+			redirectAttrs.addFlashAttribute("response",tweet);
 		} catch (TwitterException e) {
 			e.printStackTrace();
 		}
