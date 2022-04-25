@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
+import twitter4j.TwitterException;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
@@ -59,7 +59,7 @@ public class EventsController {
 	}
 
 	@GetMapping
-	public String getAllEvents(Model model) {
+	public String getAllEvents(Model model) throws TwitterException {
 		List<Event> upcoming = new ArrayList<Event>();
 		List<Event> previous = new ArrayList<Event>();
 		
@@ -76,7 +76,7 @@ public class EventsController {
 
 		model.addAttribute("upcomingEvents", upcoming);
 		model.addAttribute("previousEvents", previous);
-
+		model.addAttribute("lastFiveTweets", eventService.getLastFiveTweetsFromTimeline());
 
 		return "events/index";
 	}
@@ -188,6 +188,18 @@ public class EventsController {
 		model.addAttribute("eventsFoundPrevious", previous);
 
 		return "events/search";
+	}
+	
+	@RequestMapping(value="/tweet/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public String updateStatusOnTwitter(@PathVariable("id") Long id, String tweet, RedirectAttributes redirectAttrs) {
+		try {
+			eventService.shareTweet(tweet);
+			redirectAttrs.addFlashAttribute("response",tweet);
+		} catch (TwitterException e) {
+			e.printStackTrace();
+		}
+
+		return "redirect:/events/details/{id}";
 	}
 	
 }

@@ -18,6 +18,11 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.Status;
 import uk.ac.man.cs.eventlite.entities.Event;
 
 @Service
@@ -29,6 +34,17 @@ public class EventServiceImpl implements EventService{
 
 	@Autowired
 	private EventRepository eventRepository;
+	
+	private Twitter getTwitterInstance(){
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setDebugEnabled(true)
+		.setOAuthConsumerKey("mKApDPniO5QWZi22nl3z5jr08")
+		.setOAuthConsumerSecret("sR3kRsjHRTNFUrgTLeQ1b1d3sgfLzkIS2Pt1TPU7Gz00pWMX1S")
+		.setOAuthAccessToken("1509910249016336400-LKKOw6E19ASF19iRrNmJvnMEvfZ7Py")
+		.setOAuthAccessTokenSecret("zxyVBvQUxOvp8qJ48bm47nD1WSbEbGYU5g2rEF5SeIfBc");
+		TwitterFactory tf = new TwitterFactory(cb.build());
+		return tf.getInstance();
+	}
 	
 	@Override
 	public long count() {
@@ -75,4 +91,30 @@ public class EventServiceImpl implements EventService{
 	public void deleteById(long id) {
 		eventRepository.deleteById(id);
 	}
+	
+	@Override
+	public void shareTweet(String tweet) throws TwitterException {
+		Twitter twitter = getTwitterInstance();
+		twitter.updateStatus(tweet);
+	}
+	
+	@Override
+	public List<Status> getLastFiveTweetsFromTimeline() throws TwitterException {
+		Twitter twitter = getTwitterInstance();
+		List<Status> tweets = twitter.getHomeTimeline();
+	    List<Status> lastFiveTweets = new ArrayList<Status>();
+
+	    for (int i = 0; i < 5; i++) {
+	    	try {
+	    		lastFiveTweets.add(tweets.get(i)); 
+	    	}
+	    	catch (ArrayIndexOutOfBoundsException exception) {
+	    		break;
+	    	}
+	    }
+	    
+	    return lastFiveTweets;
+
+	}
+
 }
