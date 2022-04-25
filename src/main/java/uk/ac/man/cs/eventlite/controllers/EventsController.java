@@ -59,7 +59,7 @@ public class EventsController {
 	}
 
 	@GetMapping
-	public String getAllEvents(Model model) {
+	public String getAllEvents(Model model) throws TwitterException {
 		List<Event> upcoming = new ArrayList<Event>();
 		List<Event> previous = new ArrayList<Event>();
 		
@@ -76,7 +76,7 @@ public class EventsController {
 
 		model.addAttribute("upcomingEvents", upcoming);
 		model.addAttribute("previousEvents", previous);
-
+		model.addAttribute("lastFiveTweets", eventService.getLastFiveTweetsFromTimeline());
 
 		return "events/index";
 	}
