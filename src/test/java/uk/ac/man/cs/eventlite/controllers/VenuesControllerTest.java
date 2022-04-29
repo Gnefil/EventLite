@@ -173,5 +173,27 @@ public class VenuesControllerTest {
 		verify(venueService, never()).save(newVenueArg.capture());
 	}
 	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"USER"})
+	public void deleteVenueByNameUnauthorisedUser() throws Exception {
+		when(venueService.getVenueById(1)).thenReturn(venue);
 	
+		mvc.perform(MockMvcRequestBuilders.delete("/venues/delete/1").accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isForbidden());
+	
+		verify(venueService, never()).deleteById(1);
+	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void deleteVenueByNameNoCsrf() throws Exception {
+		when(venueService.getVenueById(1)).thenReturn(venue);
+	
+		mvc.perform(MockMvcRequestBuilders.delete("/venues/delete/1").accept(MediaType.TEXT_HTML))
+		.andExpect(status().isForbidden());
+	
+		verify(venueService, never()).deleteById(1);
+	}
+
+
 }

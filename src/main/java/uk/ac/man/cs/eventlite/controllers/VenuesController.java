@@ -59,38 +59,6 @@ public class VenuesController {
 		return "venues/index";
 	}
 
-	/*
-	@GetMapping("/{id}")
-	public String getEvent(@PathVariable("id") long id, Model model) {
-		throw new EventNotFoundException(id);
-	}
-
-	@GetMapping
-	public String getAllEvents(Model model) {
-		List<Event> upcoming = new ArrayList<Event>();
-		List<Event> previous = new ArrayList<Event>();
-		
-		for(Event event: eventService.findAllAndSort()) {
-			if (event.getDate().isAfter(LocalDate.now())) {
-				upcoming.add(event);
-			} else {
-				previous.add(event);
-			}
-		}
-		
-		// Reorder the previous ones descending
-		Collections.sort(previous, (a, b)-> b.getDate().compareTo(a.getDate()));
-
-		model.addAttribute("upcomingEvents", upcoming);
-		model.addAttribute("previousEvents", previous);
-
-//		model.addAttribute("events", eventService.findAllAndSort());
-//		model.addAttribute("venues", venueService.findAll());
-
-		return "venues/index";
-	}
-	*/
-	
 	@GetMapping("update/{id}")
 	public String getVenueUpdate(@PathVariable("id") long id, Model model, RedirectAttributes redirectAttrs) {
 		Venue v = venueService.getVenueById(id);
@@ -157,26 +125,6 @@ public class VenuesController {
 		 return "redirect:/venues";
 	}
 	
-	 
-//	@RequestMapping(value = "/newVenue", method = RequestMethod.GET)
-//	public String newVenue(Model model) {
-//		if (!model.containsAttribute("venue")) {
-//			model.addAttribute("venue", new Venue());
-//		}
-//		return "venues/newVenue";
-//	}
-//	
-//	
-//	@RequestMapping(value="/newVenue", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-//	 public String createVenue(@RequestBody @Valid @ModelAttribute Venue venue, BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
-//		 if (errors.hasErrors()) {
-//			 model.addAttribute("venue", venue);
-//			 return "venues/newVenue";
-//		 }
-//		 venueService.save(venue);
-//		 return "redirect:/venues/update/" + venue.getId();
-//	}
-//	
 	
 	@GetMapping(value="/search")
 	public String searchVenuesByName(Model model, @Param("keyWords") String keyWords) {
