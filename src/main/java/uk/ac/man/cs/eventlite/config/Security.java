@@ -30,7 +30,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		// By default, all requests are authenticated except our specific list.
 		http.authorizeRequests().requestMatchers(NO_AUTH).permitAll()
-			.antMatchers("/events/delete/**", "/events/update/**").hasRole(ADMIN_ROLE);
+			.antMatchers("/events/delete/**", "/events/update/**", "/venues/delete/**",  "/venues/update/**").hasRole(ADMIN_ROLE);
 		
 		// Use form login/logout for the Web.
 		http.formLogin().loginPage("/sign-in").permitAll();

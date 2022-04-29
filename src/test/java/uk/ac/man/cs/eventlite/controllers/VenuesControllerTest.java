@@ -31,7 +31,7 @@ import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(EventsController.class)
+@WebMvcTest(VenuesController.class)
 @Import(Security.class)
 public class VenuesControllerTest {
 
@@ -59,89 +59,25 @@ public class VenuesControllerTest {
 	private VenueService venueService;
 	
 	@Test
-	public void getSearchWithEvents() throws Exception {
-		/*String keyWord = "event";
-		when(eventService.search(keyWord)).thenReturn(events);
-		*/	
-		mvc.perform(get("/events/search?keyWords=event").accept(MediaType.TEXT_HTML))
-		.andExpect(status().isOk())
-		.andExpect(view().name("events/search"))
-		.andExpect(handler().methodName("searchEventsByName"));
-		
-		verify(eventService).search("event");
-	}
-
-	@Test
-	public void getIndexWhenNoEvents() throws Exception {
-		when(eventService.findAll()).thenReturn(Collections.<Event>emptyList());
-		when(venueService.findAll()).thenReturn(Collections.<Venue>emptyList());
-
-		mvc.perform(get("/events").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-				.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllEvents"));
-
-//		verify(eventService).findAll();
-//		verify(venueService).findAll();
-		verifyNoInteractions(event);
-		verifyNoInteractions(venue);
-	}
-
-	@Test
-	public void getIndexWithEvents() throws Exception {
-		when(venue.getName()).thenReturn("Kilburn Building");
-		when(venueService.findAll()).thenReturn(Collections.<Venue>singletonList(venue));
-
-		when(event.getVenue()).thenReturn(venue);
-		when(eventService.findAll()).thenReturn(Collections.<Event>singletonList(event));
-
-		mvc.perform(get("/events").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-				.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllEvents"));
-
-//		verify(eventService).findAll();
-//		verify(venueService).findAll();
-	}
-
-	@Test
-	public void getEventNotFound() throws Exception {
-		mvc.perform(get("/events/99").accept(MediaType.TEXT_HTML)).andExpect(status().isNotFound())
-				.andExpect(view().name("events/not_found")).andExpect(handler().methodName("getEvent"));
-	}
-	
-	@Test
-	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
-	public void deleteEventByName() throws Exception
-	{
-	when(eventService.getEventById(1)).thenReturn(event);
-
-	mvc.perform(MockMvcRequestBuilders.delete("/events/delete/1").accept(MediaType.TEXT_HTML).with(csrf()))
-	.andExpect(status().isFound())
-	.andExpect(view().name("redirect:/events"))
-	.andExpect(handler().methodName("deleteById"));
-
-	verify(eventService).deleteById(1);
-	}
-	
-	
-	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"USER"})
-	public void deleteEventByNameUnauthorisedUser() throws Exception {
-		
-		when(eventService.getEventById(1)).thenReturn(event);
+	public void deleteVenueByNameUnauthorisedUser() throws Exception {
+		when(venueService.getVenueById(1)).thenReturn(venue);
 	
-		mvc.perform(MockMvcRequestBuilders.delete("/events/delete/1").accept(MediaType.TEXT_HTML).with(csrf()))
+		mvc.perform(MockMvcRequestBuilders.delete("/venues/delete/1").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isForbidden());
 	
-		verify(eventService, never()).deleteById(1);
+		verify(venueService, never()).deleteById(1);
 	}
 	
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
-	public void deleteEventByNameNoCsrf() throws Exception {
-		when(eventService.getEventById(1)).thenReturn(event);
+	public void deleteVenueByNameNoCsrf() throws Exception {
+		when(venueService.getVenueById(1)).thenReturn(venue);
 	
-		mvc.perform(MockMvcRequestBuilders.delete("/events/delete/1").accept(MediaType.TEXT_HTML))
+		mvc.perform(MockMvcRequestBuilders.delete("/venues/delete/1").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isForbidden());
 	
-		verify(eventService, never()).deleteById(1);
+		verify(venueService, never()).deleteById(1);
 	}
 
 }
