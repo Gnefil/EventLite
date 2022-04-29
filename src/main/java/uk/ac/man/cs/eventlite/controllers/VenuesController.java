@@ -147,12 +147,25 @@ public class VenuesController {
 			 model.addAttribute("venue", venue);
 			 return "venues/update";
 		 }
+		 Iterable<Event> events = eventService.findAll();
 		 
 		 Venue v = venueService.getVenueById(id);
 		 v.setName(venue.getName());
 		 v.setCapacity(venue.getCapacity());
 		 v.setRoadName(venue.getRoadName());
 		 v.setPostcode(venue.getPostcode());
+		 
+		 for(Event event : events) {
+			 Venue ven = event.getVenue();
+			 
+			 if(ven.getId() == id) {
+				 event.setVenue(v);
+				 String summ = event.getName() + " | " + v.getName() + " | " + event.getDate().toString();
+				 event.setSummary(summ);
+			 }
+		 }
+		 
+		 
 		 venueService.save(v);
 		 return "redirect:/venues";
 	}
