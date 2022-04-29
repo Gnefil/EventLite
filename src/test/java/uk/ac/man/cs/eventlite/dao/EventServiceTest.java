@@ -31,11 +31,10 @@ public class EventServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	public void searchEventByName() {
 		
 		int totalEvents = 6;
-		Iterable<Event> eventsFound, allEvents;
+		Iterable<Event> eventsFound;
 		
 		// Make sure there are 6 test events in total
 		eventsFound = eventService.findAll();
-		allEvents = eventService.findAll();
 		assertEquals(((Collection<Event>) eventsFound).size(), totalEvents);
 		
 		// Should get all with Event keyword
@@ -45,6 +44,8 @@ public class EventServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 		// Should get one record if unique
 		eventsFound = eventService.search("alpha");
 		assertEquals(((Collection<Event>) eventsFound).size(), 1);
+		
+		
 		
 		// Should not be case sensitive
 		eventsFound = eventService.search("ALPHA");
