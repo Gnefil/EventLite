@@ -56,12 +56,15 @@ public class EventServiceImpl implements EventService{
 		return eventRepository.findAll();
 	}
 	
-	@Override
+    @Override
 	public Iterable<Event> findAllAndSort() {
 		List<Event> events1 = (List<Event>) eventRepository.findAll();
 		Collections.sort(events1,new Comparator<Event>(){
             public int compare(Event e1, Event e2){
-            	return e1.getDate().compareTo(e2.getDate());
+            	if(e1.getDate().compareTo(e2.getDate()) != 0) {
+            		return e1.getDate().compareTo(e2.getDate());
+            	}
+            	return e1.getTime().compareTo(e2.getTime());
             }});
 		return events1;
 	}
