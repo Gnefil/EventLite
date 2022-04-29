@@ -150,9 +150,11 @@
                         </tr>
                     </tbody>
                 </table>
+                <div sec:authorize="hasRole('ADMINISTRATOR')">
                 <p>
                     <a class="btn btn-primary" role="button" href="/events/newEvent"> + Add a new event</a>
                 </p>
+                </div>
             </div>
 </body>
 

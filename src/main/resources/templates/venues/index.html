@@ -35,7 +35,6 @@
             <th><i class="fas fa-map-marker-alt">Venue</th>
             <th>Address</th>
             <th>Capacity</th>
-            <th><i class="fas fa-edit"></i> Update</th>
           </tr>
         </thead>
         <tbody>
@@ -46,13 +45,15 @@
             
             <td th:text="${v.roadName + ', ' + v.postcode}">Venue address</td>
             <td th:text="${v.capacity}">Venue capacity</td>
-            <td><a th:href="@{/venues/update/{id}(id=${v.id})}">Edit <i class="fas fa-pencil-alt"></i></a></td>
+            
           </tr>
         </tbody>
       </table>
+      <div sec:authorize="hasRole('ADMINISTRATOR')">
       <p>
         <a class="btn btn-primary" role="button" href="/venues/newVenue"> + Add a new venue</a>
       </p>
+      </div>
     </div> 
     
 

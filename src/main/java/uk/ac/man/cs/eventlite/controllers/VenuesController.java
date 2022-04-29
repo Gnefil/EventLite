@@ -92,8 +92,12 @@ public class VenuesController {
 	*/
 	
 	@GetMapping("update/{id}")
-	public String getVenueUpdate(@PathVariable("id") long id, Model model) {
+	public String getVenueUpdate(@PathVariable("id") long id, Model model, RedirectAttributes redirectAttrs) {
 		Venue v = venueService.getVenueById(id);
+		if (v == null) {
+	 		redirectAttrs.addFlashAttribute("error_message", "venue not found");
+	 	}
+	 	
 		model.addAttribute("venue", v);
 		model.addAttribute("allVenues", venueService.findAll());
 		return "venues/update";
