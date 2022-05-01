@@ -1,8 +1,10 @@
 package uk.ac.man.cs.eventlite.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.jupiter.api.Disabled;
 import java.time.LocalDate;
@@ -22,6 +24,9 @@ import uk.ac.man.cs.eventlite.EventLite;
 import uk.ac.man.cs.eventlite.entities.Event;
 
 import uk.ac.man.cs.eventlite.entities.Venue;
+
+import twitter4j.TwitterException;
+import twitter4j.Status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = EventLite.class)
@@ -89,5 +94,17 @@ public class EventServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 		assertEquals(eventsList.get(1).getName(), "B");
 		assertEquals(eventsList.get(2).getName(), "C");
 	}
+	
+	@Test
+	public void testMaximum5TweetsReturned()
+	{
+		try {
+			List<Status> tweets = eventService.getLastFiveTweetsFromTimeline();
+			assertTrue(tweets.size() <= 5 && tweets.size() >= 0);	
+		} catch (TwitterException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
 
