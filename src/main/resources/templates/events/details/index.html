@@ -76,7 +76,16 @@
     			<span aria-hidden="true">&times;</span>
   			</button>
 		</div>
-    </div>
+    	</div>
+    	
+    	<div th:if="${error}">
+    	<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  			Tweet was not posted: <strong th:text = "${error}"></strong>
+  			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    			<span aria-hidden="true">&times;</span>
+  			</button>
+		</div>
+    	</div>
     
      <br>
        <form th:action="@{/events/tweet/{num}(num=${id})}" th:method="post">

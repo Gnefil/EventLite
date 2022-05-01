@@ -193,10 +193,17 @@ public class EventsController {
 	@RequestMapping(value="/tweet/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String updateStatusOnTwitter(@PathVariable("id") Long id, String tweet, RedirectAttributes redirectAttrs) {
 		try {
-			eventService.shareTweet(tweet);
-			redirectAttrs.addFlashAttribute("response",tweet);
+			tweet = tweet.trim();
+			if(tweet.length() == 0) {
+				redirectAttrs.addFlashAttribute("error","Tweet is Empty");
+			} else {
+				eventService.shareTweet(tweet);
+				redirectAttrs.addFlashAttribute("response",tweet);
+			}
+			
 		} catch (TwitterException e) {
 			e.printStackTrace();
+			redirectAttrs.addFlashAttribute("error","Unkown Error");
 		}
 
 		return "redirect:/events/details/{id}";
