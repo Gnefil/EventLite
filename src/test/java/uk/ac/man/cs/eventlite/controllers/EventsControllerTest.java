@@ -320,7 +320,18 @@ public class EventsControllerTest {
 	}
 	
 	
-	
+	@Test
+	public void postShareTweet() throws Exception{
+		String tweet = "Test tweet";
+		when(eventService.getEventById(1)).thenReturn(event);
+		mvc.perform(MockMvcRequestBuilders.post("/events/tweet/1")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("tweet", tweet)
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/events/details/{id}")).andExpect(model().hasNoErrors())
+		.andExpect(handler().methodName("updateStatusOnTwitter")).andExpect(flash().attributeExists("response"));
+	}
 	
 	
 }
