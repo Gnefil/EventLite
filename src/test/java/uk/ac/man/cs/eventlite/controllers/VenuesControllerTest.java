@@ -65,6 +65,17 @@ public class VenuesControllerTest {
 	
 
 	@Test
+	public void getSearchWithVenues() throws Exception {
+
+		mvc.perform(get("/venues/search?keyWords=venue").accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk())
+		.andExpect(view().name("venues/search"))
+		.andExpect(handler().methodName("searchVenuesByName"));
+		
+		verify(venueService).search("venue");
+	}
+	
+	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
 	public void updateVenue() throws Exception {		
 		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
