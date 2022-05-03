@@ -46,6 +46,9 @@ public class VenuesControllerApi {
 	
 	@Autowired
 	private VenueModelAssembler venueAssembler;
+	
+	@Autowired
+	private EventModelAssembler eventAssembler;
 
 	@ExceptionHandler(VenueNotFoundException.class)
 	public ResponseEntity<?> venueNotFoundHandler(VenueNotFoundException ex) {
@@ -68,12 +71,17 @@ public class VenuesControllerApi {
 		
 		// If not such venue id
 		if (venueService.getVenueById(id) == null) throw new VenueNotFoundException(id);
-		
-		
 
 		return venueAssembler.toModel(venueService.getVenueById(id));
 	}
+	
+	@GetMapping("/{id}/events")
+	public CollectionModel<EntityModel<Event>> getEventsFromVenue(@PathVariable("id") long venueId){
+		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getAllVenues()).withSelfRel();
 		
+		return eventAssembler.toCollectionModel(venueService.getEventsFromVenue(venueId))
+				.add(selfLink);
+	}
 	
 
 }

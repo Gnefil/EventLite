@@ -1,7 +1,7 @@
 package uk.ac.man.cs.eventlite.dao;
 
 import java.io.InputStream;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -34,6 +34,9 @@ public class VenueServiceImpl implements VenueService {
 
 	@Autowired
 	private VenueRepository venueRepository;
+	
+	@Autowired
+	private EventRepository eventRepository;
 	
 	@Override
 	public long count() {
@@ -125,6 +128,22 @@ public class VenueServiceImpl implements VenueService {
 		}
 		
 		return venue;
+	}
+
+	@Override
+	public List<Event> getEventsFromVenue(Long venueId) {
+
+		Iterable<Event> allEvents= eventRepository.findAll();
+		
+		List<Event> eventsInVenue = new ArrayList();
+		
+		for (Event event: allEvents) {
+			if (event.getVenue().getId() == venueId) {
+				eventsInVenue.add(event);
+			}
+		}
+		
+		return eventsInVenue;
 	}
 
 
