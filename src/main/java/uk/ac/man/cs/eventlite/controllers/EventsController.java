@@ -1,6 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,7 +65,7 @@ public class EventsController {
 		List<Event> previous = new ArrayList<Event>();
 		
 		for(Event event: eventService.findAllAndSort()) {
-			if (event.getDate().isAfter(LocalDate.now())) {
+			if (event.getDate().isAfter(LocalDate.now()) || (event.getDate().isEqual(LocalDate.now()) && event.getTime().isAfter(LocalTime.now()))) {
 				upcoming.add(event);
 			} else {
 				previous.add(event);
