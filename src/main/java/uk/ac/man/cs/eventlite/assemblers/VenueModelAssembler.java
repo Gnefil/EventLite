@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,15 @@ public class VenueModelAssembler implements RepresentationModelAssembler<Venue, 
 
 	@Override
 	public EntityModel<Venue> toModel(Venue venue) {
-		return EntityModel.of(venue, linkTo(methodOn(VenuesControllerApi.class).getVenue(venue.getId())).withSelfRel(),
-				linkTo(methodOn(VenuesControllerApi.class).getAllVenues()).withRel("Venues"));
+		
+		Long id = venue.getId();
+		
+		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getVenue(id)).withSelfRel();
+		Link venueLink = linkTo(methodOn(VenuesControllerApi.class).getVenue(id)).withRel("venue");
+		Link eventsLink = linkTo(methodOn(VenuesControllerApi.class).getVenue(id)).slash("events").withRel("events");
+		Link next3eventsLink = linkTo(methodOn(VenuesControllerApi.class).getVenue(id)).slash("next3events").withRel("next3events");
+		
+		
+		return EntityModel.of(venue, selfLink, venueLink, eventsLink, next3eventsLink);
 	}
 }

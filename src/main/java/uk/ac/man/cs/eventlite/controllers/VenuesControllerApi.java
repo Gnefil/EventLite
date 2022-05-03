@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -38,7 +39,7 @@ import uk.ac.man.cs.eventlite.exceptions.VenueNotFoundException;
 @RequestMapping(value = "/api/venues", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 public class VenuesControllerApi {
 
-	private static final String NOT_FOUND_MSG = "{ \"error\": \"%s\", \"id\": %d }";
+	private static final String NOT_FOUND_MSG = "{ \"error\": \"%s\", \"id\": %d }\n";
 
 	@Autowired
 	private VenueService venueService;
@@ -64,9 +65,15 @@ public class VenuesControllerApi {
 	
 	@GetMapping("/{id}")
 	public EntityModel<Venue> getVenue(@PathVariable("id") long id) {
-		throw new VenueNotFoundException(id);
+		
+		// If not such venue id
+		if (venueService.getVenueById(id) == null) throw new VenueNotFoundException(id);
+		
+		
+
+		return venueAssembler.toModel(venueService.getVenueById(id));
 	}
-	
+		
 	
 
 }
