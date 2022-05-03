@@ -64,7 +64,7 @@ public class EventServiceImpl implements EventService{
             	if(e1.getDate().compareTo(e2.getDate()) != 0) {
             		return e1.getDate().compareTo(e2.getDate());
             	}
-            	return e1.getTime().compareTo(e2.getTime());
+            	return e1.getName().compareTo(e2.getName());
             }});
 		return events1;
 	}
