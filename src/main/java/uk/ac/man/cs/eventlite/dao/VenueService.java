@@ -26,4 +26,6 @@ public interface VenueService {
 	public Venue geocode(Venue venue, String token);
 	
 	public List<Event> getEventsFromVenue(Long venueId);
+	
+	public List<Event> getNext3EventsFromVenue(Long venueId);
 }

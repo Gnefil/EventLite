@@ -77,11 +77,23 @@ public class VenuesControllerApi {
 	
 	@GetMapping("/{id}/events")
 	public CollectionModel<EntityModel<Event>> getEventsFromVenue(@PathVariable("id") long venueId){
-		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getAllVenues()).withSelfRel();
+		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getEventsFromVenue(venueId)).withSelfRel();
 		
 		return eventAssembler.toCollectionModel(venueService.getEventsFromVenue(venueId))
 				.add(selfLink);
 	}
 	
+	@GetMapping("/{id}/next3events")
+	public CollectionModel<EntityModel<Event>> getNext3EventsFromVenue(@PathVariable("id") long venueId){
+
+		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getNext3EventsFromVenue(venueId)).withSelfRel();
+		
+		for (Event e: venueService.getNext3EventsFromVenue(venueId)) {
+			System.out.println(e.getName());
+		}
+		
+		return eventAssembler.toCollectionModel(venueService.getNext3EventsFromVenue(venueId))
+				.add(selfLink);
+	}
 
 }

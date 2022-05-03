@@ -1,6 +1,8 @@
 package uk.ac.man.cs.eventlite.dao;
 
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -144,6 +146,34 @@ public class VenueServiceImpl implements VenueService {
 		}
 		
 		return eventsInVenue;
+	}
+
+	@Override
+	public List<Event> getNext3EventsFromVenue(Long venueId) {
+		
+		int n = 0;
+		List<Event> eventsInVenue = getEventsFromVenue(venueId);
+		List<Event> eventsUpcoming = new ArrayList();
+		List<Event> next3events = new ArrayList();
+		
+		for (Event event: eventsInVenue) {
+			if (event.getDate().isAfter(LocalDate.now()) || (event.getDate().isEqual(LocalDate.now()) && event.getTime().isAfter(LocalTime.now())))
+				eventsUpcoming.add(event);
+		}
+		
+		
+		Collections.sort(eventsUpcoming, (a, b)-> (a.getDate().isEqual(b.getDate()))
+				? (a.getTime().compareTo(b.getTime()))
+				: (a.getDate().compareTo(b.getDate()))
+				);
+		
+		for (Event event: eventsUpcoming) {
+			if (n++ < 3)
+				next3events.add(event);
+		}
+		
+		
+		return next3events;
 	}
 
 
