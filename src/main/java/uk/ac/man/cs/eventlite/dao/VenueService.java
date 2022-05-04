@@ -28,4 +28,6 @@ public interface VenueService {
 	public List<Event> getEventsFromVenue(long venueId);
 	
 	public List<Event> getNext3EventsFromVenue(long venueId);
+	
+	public List<Venue> findThreeVenuesWithMostEvents();
 }
