@@ -133,7 +133,7 @@ public class VenueServiceImpl implements VenueService {
 	}
 
 	@Override
-	public List<Event> getEventsFromVenue(Long venueId) {
+	public List<Event> getEventsFromVenue(long venueId) {
 
 		Iterable<Event> allEvents= eventRepository.findAll();
 		
@@ -149,7 +149,7 @@ public class VenueServiceImpl implements VenueService {
 	}
 
 	@Override
-	public List<Event> getNext3EventsFromVenue(Long venueId) {
+	public List<Event> getNext3EventsFromVenue(long venueId) {
 		
 		int n = 0;
 		List<Event> eventsInVenue = getEventsFromVenue(venueId);
