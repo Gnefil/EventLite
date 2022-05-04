@@ -1,5 +1,7 @@
 package uk.ac.man.cs.eventlite.dao;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import uk.ac.man.cs.eventlite.entities.Event;
@@ -22,4 +24,6 @@ public interface VenueService {
 	Iterable<Venue> findAllAndSort();
 
 	public Venue geocode(Venue venue, String token);
+	
+	List<Venue> findThreeVenuesWithMostEvents();
 }
