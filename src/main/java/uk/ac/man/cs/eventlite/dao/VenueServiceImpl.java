@@ -213,12 +213,9 @@ public class VenueServiceImpl implements VenueService {
 	
 	private static Map<Venue, Integer> sortByValue(Map<Venue, Integer> unsortMap) {
 
-        // 1. Convert Map to List of Map
         List<Map.Entry<Venue, Integer>> list =
                 new LinkedList<Map.Entry<Venue, Integer>>(unsortMap.entrySet());
 
-        // 2. Sort list with Collections.sort(), provide a custom Comparator
-        //    Try switch the o1 o2 position for a different order
         Collections.sort(list, new Comparator<Map.Entry<Venue, Integer>>() {
             public int compare(Map.Entry<Venue, Integer> o1,
                                Map.Entry<Venue, Integer> o2) {
@@ -226,7 +223,6 @@ public class VenueServiceImpl implements VenueService {
             }
         });
 
-        // 3. Loop the sorted list and put it into a new insertion order Map LinkedHashMap
         Map<Venue, Integer> sortedMap = new LinkedHashMap<Venue, Integer>();
         for (Map.Entry<Venue, Integer> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
