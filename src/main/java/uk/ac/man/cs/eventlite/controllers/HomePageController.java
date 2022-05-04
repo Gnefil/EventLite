@@ -39,9 +39,7 @@ public class HomePageController {
 			if (upcomingEvents.size() == 3) break;
 		}
 		
-		for(Venue venue: venueService.findAll()) {
-			venues.add(venue);
-		}
+		venues = venueService.findThreeVenuesWithMostEvents();
 		
 		Collections.sort(upcomingEvents, (a, b)-> a.getDate().compareTo(b.getDate()));
 		model.addAttribute("upcomingEvents", upcomingEvents);
