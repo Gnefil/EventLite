@@ -71,7 +71,7 @@ public class VenuesControllerApi {
 		
 		// If not such venue id
 		if (venueService.getVenueById(id) == null) throw new VenueNotFoundException(id);
-
+		
 		return venueAssembler.toModel(venueService.getVenueById(id));
 	}
 	
@@ -87,10 +87,6 @@ public class VenuesControllerApi {
 	public CollectionModel<EntityModel<Event>> getNext3EventsFromVenue(@PathVariable("id") long venueId){
 
 		Link selfLink = linkTo(methodOn(VenuesControllerApi.class).getNext3EventsFromVenue(venueId)).withSelfRel();
-		
-		for (Event e: venueService.getNext3EventsFromVenue(venueId)) {
-			System.out.println(e.getName());
-		}
 		
 		return eventAssembler.toCollectionModel(venueService.getNext3EventsFromVenue(venueId))
 				.add(selfLink);
