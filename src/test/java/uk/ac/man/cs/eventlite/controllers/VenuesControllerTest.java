@@ -194,6 +194,107 @@ public class VenuesControllerTest {
 	
 		verify(venueService, never()).deleteById(1);
 	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void newVenue() throws Exception {		
+		mvc.perform(MockMvcRequestBuilders.get("/venues/newVenue")
+		        .accept(MediaType.TEXT_HTML))
+		    .andExpect(status().isOk()).andExpect(view().name("venues/newVenue"))
+		    .andExpect(handler().methodName("newVenue"));
+	}
+	
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void newVenueNoName() throws Exception {
+		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		mvc.perform(MockMvcRequestBuilders.post("/venues/newVenue")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "")
+				.param("roadName", "Oxford Rd")
+				.param("postcode", "M13 9GP")
+				.param("capacity", "5000")
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isOk())
+		.andExpect(view().name("venues/newVenue")).andExpect(model().hasErrors())
+		.andExpect(handler().methodName("createVenue"));
+		verify(venueService, never()).save(newVenueArg.capture());
+	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void newVenueNoRoadName() throws Exception {
+		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		mvc.perform(MockMvcRequestBuilders.post("/venues/newVenue")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "Test Venue New")
+				.param("roadName", "")
+				.param("postcode", "M13 9GP")
+				.param("capacity", "5000")
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isOk())
+		.andExpect(view().name("venues/newVenue")).andExpect(model().hasErrors())
+		.andExpect(handler().methodName("createVenue"));
+		verify(venueService, never()).save(newVenueArg.capture());
+	}
+	
+
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"USER"})
+	public void newVenueUnauthorisedUser() throws Exception {
+		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		mvc.perform(MockMvcRequestBuilders.post("/venues/newVenue")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "Test Venue New")
+				.param("roadName", "Oxford Rd")
+				.param("postcode", "M13 9GP")
+				.param("capacity", "5000")
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isForbidden());
+	
+		verify(venueService, never()).save(newVenueArg.capture());
+	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void newVenueBadCapacity() throws Exception {
+		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		mvc.perform(MockMvcRequestBuilders.post("/venues/newVenue")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "Test Venue New")
+				.param("roadName", "Oxford Rd")
+				.param("postcode", "M13 9GP")
+				.param("capacity", "-1")
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isOk())
+		.andExpect(view().name("venues/newVenue")).andExpect(model().hasErrors())
+		.andExpect(handler().methodName("createVenue"));
+		verify(venueService, never()).save(newVenueArg.capture());
+	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void newVenueEmptyPostcode() throws Exception {
+		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		mvc.perform(MockMvcRequestBuilders.post("/venues/newVenue")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "Test Venue New")
+				.param("roadName", "Oxford Rd")
+				.param("postcode", "")
+				.param("capacity", "5000")
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isOk())
+		.andExpect(view().name("venues/newVenue")).andExpect(model().hasErrors())
+		.andExpect(handler().methodName("createVenue"));
+		verify(venueService, never()).save(newVenueArg.capture());
+	}
+
 
 
 }
