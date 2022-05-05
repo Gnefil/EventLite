@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.dao;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -17,6 +18,7 @@ import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -44,6 +46,9 @@ public class VenueServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 
 	@Autowired
 	private VenueService venueService;
+	
+	@Autowired
+	private EventService eventService;
 
 	@Test
 	public void searchVenueByName() {
@@ -115,5 +120,42 @@ public class VenueServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 		assertEquals(events.size(), 0);
 	}
 	
+	@Test
+	public void getNext3EventsWhen3() throws Exception {
+				
+		Venue A = new Venue("Graduation Venue", "23 Manchester Road", "E14 3BD", 50);
+		A.setId(0);
+		venueService.save(A);
+
+		
+		Event event = new Event("Graduation", A, LocalDate.now().plusDays(3));
+		eventService.save(event);
+		
+		Event event1 = new Event("Wedding", A, LocalDate.now().plusDays(3));
+		eventService.save(event1);
+		
+		Event event2 = new Event("Classmate Reunion", A, LocalDate.now().plusDays(3));
+		eventService.save(event2);
+				
+		List<Event> events = venueService.getNext3EventsFromVenue(0);
+				
+		for (Event e: events) {
+			assertEquals(e.getVenue().getId(), A.getId());
+			assertTrue(e.getDate().isAfter(LocalDate.now()));
+		}
+	}
+	
+	@Test
+	public void getNext3EventsWhen0() throws Exception {
+				
+		Venue A = new Venue("Graduation Venue", "23 Manchester Road", "E14 3BD", 50);
+		A.setId(0);
+		venueService.save(A);
+				
+		List<Event> events = venueService.getNext3EventsFromVenue(0);
+				
+		assertEquals(events.size(), 0);
+			
+	}
 
 }
