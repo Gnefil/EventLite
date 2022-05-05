@@ -63,6 +63,16 @@ public class VenuesControllerTest {
 	@MockBean
 	private VenueService venueService;
 	
+	@Test
+	public void getVenueDetails() throws Exception {
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		
+		mvc.perform(get("/venues/details/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("venues/details/index")).andExpect(handler().methodName("getVenueDetails"));
+
+		verify(venueService).getVenueById(1);
+	}
+	
 
 	@Test
 	public void getSearchWithVenues() throws Exception {
