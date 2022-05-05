@@ -48,7 +48,11 @@ public class EventsControllerApi {
 
 	@GetMapping("/{id}")
 	public EntityModel<Event> getEvent(@PathVariable("id") long id) {
-		throw new EventNotFoundException(id);
+		Event e = eventService.getEventById(id);
+		
+		if (e == null) throw new EventNotFoundException(id);
+		
+		return eventAssembler.toModel(e);
 	}
 
 	@GetMapping
@@ -57,22 +61,4 @@ public class EventsControllerApi {
 				.add(linkTo(methodOn(EventsControllerApi.class).getAllEvents()).withSelfRel());
 	}
 	
-	@RequestMapping(value = "/newEvent", method = RequestMethod.GET)
-	public ResponseEntity<?> newEvent() {
-		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-	}
-	
-	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createEvent(@RequestBody @Valid Event event, BindingResult result) {
-
-		if (result.hasErrors()) {
-			return ResponseEntity.unprocessableEntity().build();
-		}
-
-		eventService.save(event);
-		URI location = linkTo(EventsControllerApi.class).slash(event.getId()).toUri();
-
-		return ResponseEntity.created(location).build();
-	}
-
 }
