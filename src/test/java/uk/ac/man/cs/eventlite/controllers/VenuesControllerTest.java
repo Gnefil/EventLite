@@ -96,7 +96,7 @@ public class VenuesControllerTest {
 	
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
-	public void updateVenueNoName() throws Exception {
+	public void postUpdateVenueNoName() throws Exception {
 		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
 		when(venueService.getVenueById(1)).thenReturn(venue);
 		mvc.perform(MockMvcRequestBuilders.post("/venues/update/1")
@@ -114,7 +114,7 @@ public class VenuesControllerTest {
 	
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
-	public void updateVenueNoRoadName() throws Exception {
+	public void postUpdateVenueNoRoadName() throws Exception {
 		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
 		when(venueService.getVenueById(1)).thenReturn(venue);
 		mvc.perform(MockMvcRequestBuilders.post("/venues/update/1")
@@ -133,7 +133,7 @@ public class VenuesControllerTest {
 
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"USER"})
-	public void updateVenueUnauthorisedUser() throws Exception {
+	public void postUpdateVenueUnauthorisedUser() throws Exception {
 		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
 		when(venueService.getVenueById(1)).thenReturn(venue);
 		mvc.perform(MockMvcRequestBuilders.post("/venues/update/1")
@@ -150,7 +150,7 @@ public class VenuesControllerTest {
 	
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
-	public void updateVenueBadCapacity() throws Exception {
+	public void postUpdateVenueBadCapacity() throws Exception {
 		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
 		when(venueService.getVenueById(1)).thenReturn(venue);
 		mvc.perform(MockMvcRequestBuilders.post("/venues/update/1")
@@ -168,7 +168,7 @@ public class VenuesControllerTest {
 	
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
-	public void updateVenueEmptyPostcode() throws Exception {
+	public void postUpdateVenueEmptyPostcode() throws Exception {
 		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
 		when(venueService.getVenueById(1)).thenReturn(venue);
 		mvc.perform(MockMvcRequestBuilders.post("/venues/update/1")
