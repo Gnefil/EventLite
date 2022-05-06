@@ -103,7 +103,7 @@ class VenuesControllerApiTest {
 	}
 	
 	@Test
-	public void getIndexWhenNoEvents() throws Exception {
+	public void getIndexWhenNoVenues() throws Exception {
 		when(venueService.findAll()).thenReturn(Collections.<Venue>emptyList());
 
 		mvc.perform(get("/api/venues").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
