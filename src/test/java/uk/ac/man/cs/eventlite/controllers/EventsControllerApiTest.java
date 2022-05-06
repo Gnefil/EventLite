@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.controllers;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -75,5 +76,28 @@ public class EventsControllerApiTest {
 		mvc.perform(get("/api/events/99").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
 				.andExpect(jsonPath("$.error", containsString("event 99"))).andExpect(jsonPath("$.id", equalTo(99)))
 				.andExpect(handler().methodName("getEvent"));
+	}
+	
+	@Test
+	public void getEventDetailsById() throws Exception {
+		Event e = new Event();
+		e.setId(0);
+		e.setName("Event");
+		e.setDate(LocalDate.now());
+		e.setTime(LocalTime.now());
+		e.setVenue(new Venue("Name", "Oxford Road", 100));
+		
+		when(eventService.getEventById(0)).thenReturn(e);
+		
+		mvc.perform(get("/api/events/0").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		.andExpect(handler().methodName("getEvent"))
+		.andExpect(jsonPath("$.length()", equalTo(8))) // Id, name, capacity, address, road, postcode, lon, lat
+		.andExpect(jsonPath("$._links.self.href", endsWith("/api/events/0")))
+		.andExpect(jsonPath("$._links.event.href", endsWith("/api/events/0")))
+		.andExpect(jsonPath("$._links.venue.href", endsWith("/api/events/0/venue")))
+		;
+	
+	
+	verify(eventService, atLeast(1)).getEventById(0);
 	}
 }
