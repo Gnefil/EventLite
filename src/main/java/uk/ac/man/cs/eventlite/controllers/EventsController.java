@@ -29,6 +29,7 @@ import twitter4j.TwitterException;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 import uk.ac.man.cs.eventlite.exceptions.EventNotFoundException;
 
 import uk.ac.man.cs.eventlite.entities.Event;
@@ -86,7 +87,8 @@ public class EventsController {
 	public String getEventUpdate(Model model, @PathVariable("id") Long id, RedirectAttributes redirectAttrs) {
 		Event e = eventService.getEventById(id);
 		if (e == null) {
-	 		redirectAttrs.addFlashAttribute("error_message", "event not found");
+			model.addAttribute("not_found_id", id);
+			return "events/not_found";
 	 	}
 	 	
 		model.addAttribute("event", e);
