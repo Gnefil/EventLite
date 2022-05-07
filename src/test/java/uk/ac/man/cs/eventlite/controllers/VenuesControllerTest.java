@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,8 +13,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,9 +81,60 @@ public class VenuesControllerTest {
 	
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
-	public void updateVenue() throws Exception {		
-		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+	public void getUpdatingVenue() throws Exception{
 		when(venueService.getVenueById(1)).thenReturn(venue);
+
+		mvc.perform(get("/venues/update/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("venues/update")).andExpect(handler().methodName("getVenueUpdate"));
+		verify(venue).getId();
+	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void getUpdatingVenueNotFound() throws Exception{
+		mvc.perform(get("/venues/update/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("venues/not_found")).andExpect(handler().methodName("getVenueUpdate"));
+	}
+//	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void updateVenueWithConnectedEvents() throws Exception {
+		Venue B = new Venue("Venue B", "Highland Road", "S43 2EZ", 1000);
+		B.setId(1);
+		B.setLatitude(53.279748907167544);
+		B.setLongitude(-1.4016698156695326);
+		Event e = new Event("Event Alpha", B, LocalDate.of(2022, 7, 11), LocalTime.of(12, 30), "Event Alpha is the first of its kind…");
+		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+		List<Event> events = new ArrayList<Event>();
+		events.add(e);
+		when(venueService.getVenueById(1)).thenReturn(B);
+		when(eventService.findAll()).thenReturn((Iterable<Event>) events);
+		mvc.perform(MockMvcRequestBuilders.post("/venues/update/1")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "Test Venue New")
+				.param("roadName", "Oxford Rd")
+				.param("postcode", "M13 9GP")
+				.param("capacity", "5000")
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/venues")).andExpect(model().hasNoErrors())
+		.andExpect(handler().methodName("updateVenue")).andExpect(flash().attributeExists("ok_message"));
+		verify(venueService).save(newVenueArg.capture());
+	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void updateVenueWithEventsNotConnected() throws Exception {
+		Venue B = new Venue("Venue B", "Highland Road", "S43 2EZ", 1000);
+		B.setId(1);
+		B.setLatitude(53.279748907167544);
+		B.setLongitude(-1.4016698156695326);
+		Event e = new Event("Event Alpha", venue, LocalDate.of(2022, 7, 11), LocalTime.of(12, 30), "Event Alpha is the first of its kind…");
+		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+		List<Event> events = new ArrayList<Event>();
+		events.add(e);
+		when(venueService.getVenueById(1)).thenReturn(B);
+		when(eventService.findAll()).thenReturn((Iterable<Event>) events);
 		mvc.perform(MockMvcRequestBuilders.post("/venues/update/1")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("name", "Test Venue New")
@@ -93,6 +148,23 @@ public class VenuesControllerTest {
 		verify(venueService).save(newVenueArg.capture());
 	}
 	
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void updateVenueWithoutConnectedEvents() throws Exception {
+		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		mvc.perform(MockMvcRequestBuilders.post("/venues/update/1")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "Test Venue New")
+				.param("roadName", "Oxford Rd")
+				.param("postcode", "M13 9GP")
+				.param("capacity", "5000")
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/venues")).andExpect(model().hasNoErrors());
+		verify(venueService).save(newVenueArg.capture());
+	}
 	
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})

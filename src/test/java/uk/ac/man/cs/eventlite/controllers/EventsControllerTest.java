@@ -180,6 +180,15 @@ public class EventsControllerTest {
 	
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void getUpdatingEventNotFound() throws Exception{
+
+		mvc.perform(get("/events/update/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("events/not_found")).andExpect(handler().methodName("getEventUpdate"));
+	}
+	
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
 	public void postUpdateEventAuthorised() throws Exception {
 		ArgumentCaptor<Event> newEventArg = ArgumentCaptor.forClass(Event.class);
 		when(eventService.getEventById(1)).thenReturn(event);
