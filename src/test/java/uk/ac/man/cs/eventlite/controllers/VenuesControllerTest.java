@@ -128,6 +128,7 @@ public class VenuesControllerTest {
 		B.setId(1);
 		B.setLatitude(53.279748907167544);
 		B.setLongitude(-1.4016698156695326);
+		B.setAddress("Cool place");
 		Event e = new Event("Event Alpha", venue, LocalDate.of(2022, 7, 11), LocalTime.of(12, 30), "Event Alpha is the first of its kind…");
 		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
 		List<Event> events = new ArrayList<Event>();

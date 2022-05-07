@@ -7,18 +7,24 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.jupiter.api.Disabled;
+
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import uk.ac.man.cs.eventlite.EventLite;
 import uk.ac.man.cs.eventlite.entities.Event;
@@ -40,6 +46,7 @@ public class EventServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Autowired
 	private VenueService venueService;
+	
 
 	@Test
 	public void searchEventByName() {
@@ -96,15 +103,69 @@ public class EventServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	}
 	
 	@Test
-	public void testMaximum5TweetsReturned()
+	public void testMaximum5TweetsReturned() throws TwitterException
 	{
-		try {
-			List<Status> tweets = eventService.getLastFiveTweetsFromTimeline();
-			assertTrue(tweets.size() <= 5 && tweets.size() >= 0);	
-		} catch (TwitterException e) {
-			e.printStackTrace();
-		}
+		List<Status> tweets = eventService.getLastFiveTweetsFromTimeline();
+		assertTrue(tweets.size() <= 5 && tweets.size() >= 0);	
+		
 	}
+	
+	@Test
+	public void testGetRealEvent() {
+		Venue VA = new Venue();
+		venueService.save(VA);
+		Event B = new Event("B", VA, LocalDate.of(1000,01,02),
+				LocalTime.of(5,30));
+		eventService.save(B);
+		Event e = eventService.getEventById(B.getId());
+		assertEquals(B, e);
+	}
+	
+	@Test
+	public void testGetNullEvent() {
+		Venue VA = new Venue();
+		venueService.save(VA);
+		Event B = new Event("B", VA, LocalDate.of(1000,01,02),
+				LocalTime.of(5,30));
+		long id = B.getId();
+		B.setId(id+1);
+		eventService.save(B);
+		Event e = eventService.getEventById(B.getId());
+		assertEquals(null, e);
+	}
+	
+	@Test
+	public void testCount() {
+		Venue VA = new Venue();
+		venueService.save(VA);
+		Event B = new Event("B", VA, LocalDate.of(1000,01,02),
+				LocalTime.of(5,30));
+		long count_before = eventService.count();
+		eventService.save(B);
+		assertEquals(eventService.count(),count_before+1);
+	}
+	
+	@Test
+	public void testDelete() {
+		Venue VA = new Venue();
+		venueService.save(VA);
+		Event B = new Event("B", VA, LocalDate.of(1000,01,02),
+				LocalTime.of(5,30));
+		long count_before = eventService.count();
+		eventService.save(B);
+		assertEquals(eventService.count(),count_before+1);
+		eventService.deleteById(B.getId());
+		assertEquals(eventService.count(),count_before);
+	}
+	
+	@Test
+	public void testShareTweet() throws TwitterException {
+		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+		String tweet = "Test time: " + timeStamp;
+		eventService.shareTweet(tweet);
+		assertTrue(true);
+	}
+	
 	
 }
 
