@@ -4,6 +4,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -49,17 +50,15 @@ public class VenuesControllerTest {
 
 	@Mock
 	private Event event;
+	
+	@Mock
+	private Event event2;
 
 	@Mock
 	private Venue venue;
 	
 	@Mock
 	private Iterable<Event> events;
-
-	/*
-	@Mock
-	private Iterable<Event> events;
-	*/
 
 	@MockBean
 	private EventService eventService;
@@ -276,6 +275,35 @@ public class VenuesControllerTest {
 		.andExpect(status().isForbidden());
 	
 		verify(venueService, never()).deleteById(1);
+	}
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void deleteVenueByName() throws Exception {
+		when(venueService.getVenueById(1)).thenReturn(venue);
+	
+		mvc.perform(MockMvcRequestBuilders.delete("/venues/delete/1").accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/venues"))
+		.andExpect(handler().methodName("deleteById"));
+	
+		verify(venueService).deleteById(1);
+	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void deleteVenueHasEvent() throws Exception {
+		when(venue.getName()).thenReturn("Kilburn Building");
+		when(venueService.findAll()).thenReturn(Collections.<Venue>singletonList(venue));
+
+		when(event.getVenue()).thenReturn(venue);
+		when(eventService.findAll()).thenReturn(Collections.<Event>singletonList(event));
+		
+		mvc.perform(MockMvcRequestBuilders.delete("/venues/delete/1").accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/venues"))
+		.andExpect(handler().methodName("deleteById"));
+	
+		verify(venueService).deleteById(1);
 	}
 	
 	@Test
