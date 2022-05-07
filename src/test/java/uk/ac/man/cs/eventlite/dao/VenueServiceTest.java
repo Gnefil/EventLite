@@ -157,5 +157,42 @@ public class VenueServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 		assertEquals(events.size(), 0);
 			
 	}
+	
+	@Test
+	public void testGetRealVenue() {
+		Venue VA = new Venue();
+		venueService.save(VA);
+		Venue v = venueService.getVenueById(VA.getId());
+		assertEquals(VA, v);
+	}
+	
+	@Test
+	public void testGetNullVenue() {
+		Venue VA = new Venue();
+		venueService.save(VA);
+		long id = VA.getId();
+		VA.setId(id+1);
+		venueService.save(VA);
+		Venue v = venueService.getVenueById(VA.getId());
+		assertEquals(null, v);
+	}
+	
+	@Test
+	public void testCount() {
+		Venue VA = new Venue();
+		long count_before = venueService.count();
+		venueService.save(VA);
+		assertEquals(venueService.count(),count_before+1);
+	}
+	
+	@Test
+	public void testDelete() {
+		Venue VA = new Venue();
+		long count_before = venueService.count();
+		venueService.save(VA);
+		assertEquals(venueService.count(),count_before+1);
+		venueService.deleteById(VA.getId());
+		assertEquals(venueService.count(),count_before);
+	}
 
 }
