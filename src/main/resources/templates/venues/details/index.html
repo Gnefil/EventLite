@@ -19,7 +19,8 @@
       <p th:text="${venue.postcode}"></p>
       <p > <b>Capacity: </b></p>
       <p th:text="${venue.capacity}"></p> 
-    </blockquote>
+      <a class="btn btn-primary btn-back" role="button" onclick="history.go(-1);" style="color:#FFFFFF"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back</a>
+      </blockquote>
     </div>
     <br>
    	<div sec:authorize="hasRole('ADMINISTRATOR')">
