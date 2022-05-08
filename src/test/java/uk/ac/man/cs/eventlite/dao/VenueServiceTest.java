@@ -92,19 +92,11 @@ public class VenueServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Test
 	public void findEventsFromVenue() throws Exception {
-		Venue A = new Venue("A", "23 Manchester Road", "E14 3BD", 50);
-		A.setId(0);
-		venueService.save(A);
 
-		Event e1 = new Event("Event 1", A, LocalDate.now());
-		Event e2 = new Event("Event 2", A, LocalDate.now());
-		Event e3 = new Event("Event 3", A, LocalDate.now());
-		Event e4 = new Event("Event 4", A, LocalDate.now());
-		
-		List<Event> events = venueService.getEventsFromVenue(0);
+		List<Event> events = venueService.getEventsFromVenue(1);
 		
 		for (Event event: events) {
-			assertEquals(event.getVenue().getId(), 0);
+			assertEquals(event.getVenue().getId(), 1);
 		}
 
 	}
@@ -122,25 +114,14 @@ public class VenueServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Test
 	public void getNext3EventsWhen3() throws Exception {
-				
-		Venue A = new Venue("Graduation Venue", "23 Manchester Road", "E14 3BD", 50);
-		A.setId(0);
-		venueService.save(A);
-
 		
-		Event event = new Event("Graduation", A, LocalDate.now().plusDays(3));
-		eventService.save(event);
+		eventService.save(new Event("event1", venueService.getVenueById(1), LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("event2", venueService.getVenueById(1), LocalDate.now().plusDays(1), LocalTime.now()));
 		
-		Event event1 = new Event("Wedding", A, LocalDate.now().plusDays(3));
-		eventService.save(event1);
-		
-		Event event2 = new Event("Classmate Reunion", A, LocalDate.now().plusDays(3));
-		eventService.save(event2);
-				
-		List<Event> events = venueService.getNext3EventsFromVenue(0);
+		List<Event> events = venueService.getNext3EventsFromVenue(1);
 				
 		for (Event e: events) {
-			assertEquals(e.getVenue().getId(), A.getId());
+			assertEquals(e.getVenue().getId(), 1);
 			assertTrue(e.getDate().isAfter(LocalDate.now()));
 		}
 	}
