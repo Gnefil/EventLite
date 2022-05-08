@@ -64,6 +64,27 @@ public class VenuesControllerTest {
 	private VenueService venueService;
 	
 	@Test
+	public void getAllVenues() throws Exception {
+		mvc.perform(get("/venues").accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk())
+		.andExpect(view().name("venues/index"));
+	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void deleteVenueById() throws Exception {
+		when(venueService.getVenueById(1)).thenReturn(venue);
+
+		mvc.perform(MockMvcRequestBuilders.delete("/venues/delete/1").accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/venues"))
+		.andExpect(handler().methodName("deleteById"));
+
+		verify(venueService).deleteById(1);
+
+	}
+	
+	@Test
 	public void getVenueDetails() throws Exception {
 		when(venueService.getVenueById(1)).thenReturn(venue);
 		
