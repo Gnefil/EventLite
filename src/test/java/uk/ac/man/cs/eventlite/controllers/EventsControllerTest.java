@@ -25,7 +25,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -84,9 +86,13 @@ public class EventsControllerTest {
 	
 	@Test
 	public void getSearchWithEvents() throws Exception {
-		/*String keyWord = "event";
-		when(eventService.search(keyWord)).thenReturn(events);
-		*/	
+		
+		List<Event> events = new ArrayList();
+		events.add(new Event("event 1", venue, LocalDate.now().plusDays(1)));
+		events.add(new Event("event 2", venue, LocalDate.now().minusDays(1)));
+		
+		when(eventService.search("event")).thenReturn(events);
+		
 		mvc.perform(get("/events/search?keyWords=event").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isOk())
 		.andExpect(view().name("events/search"))
