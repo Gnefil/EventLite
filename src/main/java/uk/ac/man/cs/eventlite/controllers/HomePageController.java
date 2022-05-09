@@ -28,11 +28,11 @@ public class HomePageController {
 	private VenueService venueService;
 	
 	@GetMapping
-	public String getAllEvents(Model model) {
+	public String getEventsAndVenuesForHomePage(Model model) {
 		List<Event> upcomingEvents = new ArrayList<Event>();
 		List<Venue> venues = new ArrayList<Venue>();
 		
-		for(Event event: eventService.findAllAndSort()) {
+		for(Event event: eventService.findAll()) {
 			if (event.getDate().isAfter(LocalDate.now())) {
 				upcomingEvents.add(event);
 			}
