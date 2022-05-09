@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -372,6 +373,58 @@ public class EventsControllerTest {
 		.andExpect(status().isFound())
 		.andExpect(view().name("redirect:/events/details/{id}")).andExpect(model().hasNoErrors())
 		.andExpect(handler().methodName("updateStatusOnTwitter")).andExpect(flash().attributeExists("error"));
+	}
+	
+	//New test
+	
+	@Test
+	public void getEvent() throws Exception {
+	    Venue v = new Venue();
+		v.setName("Venue");
+		v.setCapacity(1000);
+		venueService.save(v);
+		
+		Event e = new Event();
+		e.setId(1);
+		e.setName("Event");
+		e.setDate(LocalDate.now());
+		e.setTime(LocalTime.now());
+		e.setVenue(v);
+		long id = e.getId();
+		when(eventService.getEventById(id)).thenReturn(e);
+
+		mvc.perform(MockMvcRequestBuilders.get("/events/details/"+id).accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("events/details/index")).andExpect(handler().methodName("getEventsDetails"));
+		verify(eventService).getEventById(id);
+	}
+	
+	@Test
+	public void postEvent() throws Exception {
+		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
+
+		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "Test Event New")
+				.param("date", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.param("venue", venue.getName())
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/events")).andExpect(model().hasNoErrors())
+		.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeExists("ok_message"));
+
+		verify(eventService).save(arg.capture());
+		assertThat("Test Event New", equalTo(arg.getValue().getName()));
+	}
+	
+	
+	
+
+	@Test
+	public void getNewEvent() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/events/newEvent").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk()).andExpect(view().name("events/newEvent"))
+		.andExpect(handler().methodName("newEvent"));
 	}
 	
 	
