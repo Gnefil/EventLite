@@ -211,7 +211,7 @@ public class VenueServiceImpl implements VenueService {
 		return venuesWithMostEvents;
 	}
 	
-	private static Map<Venue, Integer> sortByValue(Map<Venue, Integer> unsortMap) {
+	public Map<Venue, Integer> sortByValue(Map<Venue, Integer> unsortMap) {
 
         List<Map.Entry<Venue, Integer>> list =
                 new LinkedList<Map.Entry<Venue, Integer>>(unsortMap.entrySet());

@@ -13,7 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -174,6 +176,51 @@ public class VenueServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 		assertEquals(venueService.count(),count_before+1);
 		venueService.deleteById(VA.getId());
 		assertEquals(venueService.count(),count_before);
+	}
+	
+	@Test
+	public void testFindThreeVenuesWithMostEvents() {
+		
+		Venue A = new Venue("A", "23 Manchester Road", "E14 3BD", 50);
+		Venue B = new Venue("B", "23 Manchester Road", "E14 3BD", 50);
+		venueService.save(A);
+		venueService.save(B);
+		
+		eventService.save(new Event("event1", A , LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("event2", A, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("a", A, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("b", A, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("c", A, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("d", A, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("event3", B, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("event4", B, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("event5", B, LocalDate.now().plusDays(1), LocalTime.now()));
+		
+		List<Venue>  venues = venueService.findThreeVenuesWithMostEvents();
+		assertTrue(venues.size() <= 3);
+		assertTrue(venues.get(0) == A);
+	}
+	
+	@Test
+	public void testSortByValue() {
+		Venue A = new Venue("A", "23 Manchester Road", "E14 3BD", 50);
+		Venue B = new Venue("B", "23 Manchester Road", "E14 3BD", 50);
+		Map<Venue, Integer> unsortMap = new HashMap<Venue, Integer>();
+		unsortMap.put(A, 2);
+		unsortMap.put(B, 3);
+		
+		Map<Venue, Integer> sortedMap = venueService.sortByValue(unsortMap);
+		
+		int count = 0;
+	    for (Map.Entry<Venue, Integer> entry : sortedMap.entrySet()) {
+	    	if(count == 0) {
+	    		assertTrue(entry.getValue() == 3); 
+	    	}
+	    	else {
+	    		assertTrue(entry.getValue() == 2); 
+	    	}
+	    	count += 1;
+        }
 	}
 
 }
