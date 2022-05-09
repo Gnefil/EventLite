@@ -407,6 +407,22 @@ public class VenuesControllerTest {
 		verify(venueService, never()).save(newVenueArg.capture());
 	}
 
-
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void newVenueCorrect() throws Exception {
+		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		mvc.perform(MockMvcRequestBuilders.post("/venues/newVenue")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "Kilburn")
+				.param("roadName", "Oxford Rd")
+				.param("postcode", "M13 9GP")
+				.param("capacity", "5000")
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/venues")).andExpect(model().hasNoErrors())
+		.andExpect(handler().methodName("createVenue"));
+		verify(venueService).save(newVenueArg.capture());
+	}
 
 }

@@ -169,11 +169,10 @@ public class VenuesController {
 		}
 		
 		venue = venueService.geocode(venue, MAPBOX_ACCESS_TOKEN);
-		venueService.save(venue);
 		
 		venueService.save(venue);
 		redirectAttrs.addFlashAttribute("ok_message", "New venue added.");	
 		
-		return "redirect:/events";
+		return "redirect:/venues";
 	}
 }
