@@ -29,6 +29,7 @@ import twitter4j.TwitterException;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 import uk.ac.man.cs.eventlite.exceptions.EventNotFoundException;
 
 import uk.ac.man.cs.eventlite.entities.Event;
@@ -86,7 +87,8 @@ public class EventsController {
 	public String getEventUpdate(Model model, @PathVariable("id") Long id, RedirectAttributes redirectAttrs) {
 		Event e = eventService.getEventById(id);
 		if (e == null) {
-	 		redirectAttrs.addFlashAttribute("error_message", "event not found");
+			model.addAttribute("not_found_id", id);
+			return "events/not_found";
 	 	}
 	 	
 		model.addAttribute("event", e);
@@ -192,21 +194,14 @@ public class EventsController {
 	}
 	
 	@RequestMapping(value="/tweet/{id}", method= RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String updateStatusOnTwitter(@PathVariable("id") Long id, String tweet, RedirectAttributes redirectAttrs) {
-		try {
-			tweet = tweet.trim();
-			if(tweet.length() == 0) {
-				redirectAttrs.addFlashAttribute("error","Tweet is Empty");
-			} else {
-				eventService.shareTweet(tweet);
-				redirectAttrs.addFlashAttribute("response",tweet);
-			}
-			
-		} catch (TwitterException e) {
-			e.printStackTrace();
-			redirectAttrs.addFlashAttribute("error","Unkown Error");
+	public String updateStatusOnTwitter(@PathVariable("id") Long id, String tweet, RedirectAttributes redirectAttrs) throws TwitterException {
+		tweet = tweet.trim();
+		if(tweet.length() == 0) {
+			redirectAttrs.addFlashAttribute("error","Tweet is Empty");
+		} else {
+			eventService.shareTweet(tweet);
+			redirectAttrs.addFlashAttribute("response",tweet);
 		}
-
 		return "redirect:/events/details/{id}";
 	}
 	

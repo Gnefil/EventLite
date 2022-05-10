@@ -102,18 +102,13 @@ public class EventServiceImpl implements EventService{
 	}
 	
 	@Override
-	public List<Status> getLastFiveTweetsFromTimeline() throws TwitterException {
+	public List<Status> getLastFiveTweetsFromTimeline() throws TwitterException, ArrayIndexOutOfBoundsException {
 		Twitter twitter = getTwitterInstance();
 		List<Status> tweets = twitter.getHomeTimeline();
 	    List<Status> lastFiveTweets = new ArrayList<Status>();
 
 	    for (int i = 0; i < 5; i++) {
-	    	try {
-	    		lastFiveTweets.add(tweets.get(i)); 
-	    	}
-	    	catch (ArrayIndexOutOfBoundsException exception) {
-	    		break;
-	    	}
+	    	lastFiveTweets.add(tweets.get(i));     	
 	    }
 	    
 	    return lastFiveTweets;

@@ -13,7 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -92,19 +94,11 @@ public class VenueServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Test
 	public void findEventsFromVenue() throws Exception {
-		Venue A = new Venue("A", "23 Manchester Road", "E14 3BD", 50);
-		A.setId(0);
-		venueService.save(A);
 
-		Event e1 = new Event("Event 1", A, LocalDate.now());
-		Event e2 = new Event("Event 2", A, LocalDate.now());
-		Event e3 = new Event("Event 3", A, LocalDate.now());
-		Event e4 = new Event("Event 4", A, LocalDate.now());
-		
-		List<Event> events = venueService.getEventsFromVenue(0);
+		List<Event> events = venueService.getEventsFromVenue(1);
 		
 		for (Event event: events) {
-			assertEquals(event.getVenue().getId(), 0);
+			assertEquals(event.getVenue().getId(), 1);
 		}
 
 	}
@@ -122,25 +116,14 @@ public class VenueServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	
 	@Test
 	public void getNext3EventsWhen3() throws Exception {
-				
-		Venue A = new Venue("Graduation Venue", "23 Manchester Road", "E14 3BD", 50);
-		A.setId(0);
-		venueService.save(A);
-
 		
-		Event event = new Event("Graduation", A, LocalDate.now().plusDays(3));
-		eventService.save(event);
+		eventService.save(new Event("event1", venueService.getVenueById(1), LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("event2", venueService.getVenueById(1), LocalDate.now().plusDays(1), LocalTime.now()));
 		
-		Event event1 = new Event("Wedding", A, LocalDate.now().plusDays(3));
-		eventService.save(event1);
-		
-		Event event2 = new Event("Classmate Reunion", A, LocalDate.now().plusDays(3));
-		eventService.save(event2);
-				
-		List<Event> events = venueService.getNext3EventsFromVenue(0);
+		List<Event> events = venueService.getNext3EventsFromVenue(1);
 				
 		for (Event e: events) {
-			assertEquals(e.getVenue().getId(), A.getId());
+			assertEquals(e.getVenue().getId(), 1);
 			assertTrue(e.getDate().isAfter(LocalDate.now()));
 		}
 	}
@@ -156,6 +139,88 @@ public class VenueServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 				
 		assertEquals(events.size(), 0);
 			
+	}
+	
+	@Test
+	public void testGetRealVenue() {
+		Venue VA = new Venue();
+		venueService.save(VA);
+		Venue v = venueService.getVenueById(VA.getId());
+		assertEquals(VA, v);
+	}
+	
+	@Test
+	public void testGetNullVenue() {
+		Venue VA = new Venue();
+		venueService.save(VA);
+		long id = VA.getId();
+		VA.setId(id+1);
+		venueService.save(VA);
+		Venue v = venueService.getVenueById(VA.getId());
+		assertEquals(null, v);
+	}
+	
+	@Test
+	public void testCount() {
+		Venue VA = new Venue();
+		long count_before = venueService.count();
+		venueService.save(VA);
+		assertEquals(venueService.count(),count_before+1);
+	}
+	
+	@Test
+	public void testDelete() {
+		Venue VA = new Venue();
+		long count_before = venueService.count();
+		venueService.save(VA);
+		assertEquals(venueService.count(),count_before+1);
+		venueService.deleteById(VA.getId());
+		assertEquals(venueService.count(),count_before);
+	}
+	
+	@Test
+	public void testFindThreeVenuesWithMostEvents() {
+		
+		Venue A = new Venue("A", "23 Manchester Road", "E14 3BD", 50);
+		Venue B = new Venue("B", "23 Manchester Road", "E14 3BD", 50);
+		venueService.save(A);
+		venueService.save(B);
+		
+		eventService.save(new Event("event1", A , LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("event2", A, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("a", A, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("b", A, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("c", A, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("d", A, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("event3", B, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("event4", B, LocalDate.now().plusDays(1), LocalTime.now()));
+		eventService.save(new Event("event5", B, LocalDate.now().plusDays(1), LocalTime.now()));
+		
+		List<Venue>  venues = venueService.findThreeVenuesWithMostEvents();
+		assertTrue(venues.size() <= 3);
+		assertTrue(venues.get(0) == A);
+	}
+	
+	@Test
+	public void testSortByValue() {
+		Venue A = new Venue("A", "23 Manchester Road", "E14 3BD", 50);
+		Venue B = new Venue("B", "23 Manchester Road", "E14 3BD", 50);
+		Map<Venue, Integer> unsortMap = new HashMap<Venue, Integer>();
+		unsortMap.put(A, 2);
+		unsortMap.put(B, 3);
+		
+		Map<Venue, Integer> sortedMap = venueService.sortByValue(unsortMap);
+		
+		int count = 0;
+	    for (Map.Entry<Venue, Integer> entry : sortedMap.entrySet()) {
+	    	if(count == 0) {
+	    		assertTrue(entry.getValue() == 3); 
+	    	}
+	    	else {
+	    		assertTrue(entry.getValue() == 2); 
+	    	}
+	    	count += 1;
+        }
 	}
 
 }

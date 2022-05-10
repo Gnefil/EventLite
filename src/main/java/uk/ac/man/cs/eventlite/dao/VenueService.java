@@ -1,6 +1,7 @@
 package uk.ac.man.cs.eventlite.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -30,4 +31,6 @@ public interface VenueService {
 	public List<Event> getNext3EventsFromVenue(long venueId);
 	
 	public List<Venue> findThreeVenuesWithMostEvents();
+	
+	public Map<Venue, Integer> sortByValue(Map<Venue, Integer> unsortMap);
 }

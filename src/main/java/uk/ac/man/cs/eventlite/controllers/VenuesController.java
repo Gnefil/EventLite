@@ -53,7 +53,7 @@ public class VenuesController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String getAllVenus(Model model) {
+	public String getAllVenues(Model model) {
 
 		model.addAttribute("venues", venueService.findAllAndSort());
 		return "venues/index";
@@ -63,7 +63,8 @@ public class VenuesController {
 	public String getVenueUpdate(@PathVariable("id") long id, Model model, RedirectAttributes redirectAttrs) {
 		Venue v = venueService.getVenueById(id);
 		if (v == null) {
-	 		redirectAttrs.addFlashAttribute("error_message", "venue not found");
+			model.addAttribute("not_found_id", id);
+			return "venues/not_found";
 	 	}
 	 	
 		model.addAttribute("venue", v);
@@ -131,6 +132,7 @@ public class VenuesController {
 				 event.setVenue(v);
 				 String summ = event.getName() + " | " + v.getName() + " | " + event.getDate().toString();
 				 event.setSummary(summ);
+				 redirectAttrs.addFlashAttribute("ok_message", "updated events with venue");
 			 }
 		 }
 		 
@@ -168,11 +170,10 @@ public class VenuesController {
 		}
 		
 		venue = venueService.geocode(venue, MAPBOX_ACCESS_TOKEN);
-		venueService.save(venue);
 		
 		venueService.save(venue);
 		redirectAttrs.addFlashAttribute("ok_message", "New venue added.");	
 		
-		return "redirect:/events";
+		return "redirect:/venues";
 	}
 }

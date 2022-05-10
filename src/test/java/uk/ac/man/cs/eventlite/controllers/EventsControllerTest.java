@@ -23,9 +23,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -84,9 +87,13 @@ public class EventsControllerTest {
 	
 	@Test
 	public void getSearchWithEvents() throws Exception {
-		/*String keyWord = "event";
-		when(eventService.search(keyWord)).thenReturn(events);
-		*/	
+		
+		List<Event> events = new ArrayList();
+		events.add(new Event("event 1", venue, LocalDate.now().plusDays(1)));
+		events.add(new Event("event 2", venue, LocalDate.now().minusDays(1)));
+		
+		when(eventService.search("event")).thenReturn(events);
+		
 		mvc.perform(get("/events/search?keyWords=event").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isOk())
 		.andExpect(view().name("events/search"))
@@ -177,6 +184,15 @@ public class EventsControllerTest {
 				.andExpect(view().name("events/update")).andExpect(handler().methodName("getEventUpdate"));
 		verify(event).getId();
 	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void getUpdatingEventNotFound() throws Exception{
+
+		mvc.perform(get("/events/update/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("events/not_found")).andExpect(handler().methodName("getEventUpdate"));
+	}
+	
 	
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
@@ -357,6 +373,58 @@ public class EventsControllerTest {
 		.andExpect(status().isFound())
 		.andExpect(view().name("redirect:/events/details/{id}")).andExpect(model().hasNoErrors())
 		.andExpect(handler().methodName("updateStatusOnTwitter")).andExpect(flash().attributeExists("error"));
+	}
+	
+	//New test
+	
+	@Test
+	public void getEvent() throws Exception {
+	    Venue v = new Venue();
+		v.setName("Venue");
+		v.setCapacity(1000);
+		venueService.save(v);
+		
+		Event e = new Event();
+		e.setId(1);
+		e.setName("Event");
+		e.setDate(LocalDate.now());
+		e.setTime(LocalTime.now());
+		e.setVenue(v);
+		long id = e.getId();
+		when(eventService.getEventById(id)).thenReturn(e);
+
+		mvc.perform(MockMvcRequestBuilders.get("/events/details/"+id).accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("events/details/index")).andExpect(handler().methodName("getEventsDetails"));
+		verify(eventService).getEventById(id);
+	}
+	
+	@Test
+	public void postEvent() throws Exception {
+		ArgumentCaptor<Event> arg = ArgumentCaptor.forClass(Event.class);
+
+		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "Test Event New")
+				.param("date", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.param("venue", venue.getName())
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/events")).andExpect(model().hasNoErrors())
+		.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeExists("ok_message"));
+
+		verify(eventService).save(arg.capture());
+		assertThat("Test Event New", equalTo(arg.getValue().getName()));
+	}
+	
+	
+	
+
+	@Test
+	public void getNewEvent() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/events/newEvent").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk()).andExpect(view().name("events/newEvent"))
+		.andExpect(handler().methodName("newEvent"));
 	}
 	
 	
