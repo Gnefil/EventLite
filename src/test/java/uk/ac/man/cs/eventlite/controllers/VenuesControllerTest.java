@@ -101,6 +101,48 @@ public class VenuesControllerTest {
 		verify(venueService).getVenueById(1);
 	}
 	
+	
+	@Test
+	public void getVenueDetailsNotExisting() throws Exception {
+//		when(venueService.getVenueById(1)).thenReturn(venue);
+		
+		mvc.perform(get("/venues/details/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("venues/not_found"));
+
+//		verify(venueService).getVenueById(1);
+	}
+	
+	@Test
+	public void getVenueDetailsWithUpcomingEvents() throws Exception {
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		Event e = new Event("Event Alpha", venue, LocalDate.of(2022, 7, 11), LocalTime.of(12, 30), "Event Alpha is the first of its kind…");
+		List<Event> events = new ArrayList<Event>();
+		events.add(e);
+		
+		when(eventService.findAllAndSort()).thenReturn(events);
+		
+		mvc.perform(get("/venues/details/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("venues/details/index")).andExpect(handler().methodName("getVenueDetails"));
+
+		verify(venueService).getVenueById(1);
+	}
+	
+	@Test
+	public void getVenueDetailsWithNoUpcomingEvents() throws Exception {
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		Venue v = new Venue();
+		Event e = new Event("Event Alpha", v, LocalDate.of(2022, 7, 11), LocalTime.of(12, 30), "Event Alpha is the first of its kind…");
+		List<Event> events = new ArrayList<Event>();
+		events.add(e);
+		
+		when(eventService.findAllAndSort()).thenReturn(events);
+		
+		mvc.perform(get("/venues/details/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("venues/details/index")).andExpect(handler().methodName("getVenueDetails"));
+
+		verify(venueService).getVenueById(1);
+	}
+	
 
 	@Test
 	public void getSearchWithVenues() throws Exception {
@@ -324,6 +366,29 @@ public class VenuesControllerTest {
 	
 		verify(venueService).deleteById(1);
 	}
+	
+	@Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	public void deleteVenueByNameConnectedEvents() throws Exception {
+		
+		Venue B = new Venue("Venue B", "Highland Road", "S43 2EZ", 1000);
+		B.setId(1);
+		B.setLatitude(53.279748907167544);
+		B.setLongitude(-1.4016698156695326);
+		Event e = new Event("Event Alpha", B, LocalDate.of(2022, 7, 11), LocalTime.of(12, 30), "Event Alpha is the first of its kind…");
+		List<Event> events = new ArrayList<Event>();
+		events.add(e);
+		when(venueService.getVenueById(1)).thenReturn(B);
+		when(eventService.findAll()).thenReturn((Iterable<Event>) events);
+			
+		mvc.perform(MockMvcRequestBuilders.delete("/venues/delete/1").accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/venues"))
+		.andExpect(handler().methodName("deleteById"));
+	
+		verify(venueService, never()).deleteById(1);
+	}
+	
 	
 	@Test
 	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})

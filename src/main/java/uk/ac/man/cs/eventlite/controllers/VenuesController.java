@@ -44,13 +44,13 @@ public class VenuesController {
 	
 	String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiYXNvbGkiLCJhIjoiY2wxYWl3NzUyMXk3bTNpc2d4a3BrYmlpMiJ9.T1Lq2KsPQlAuWIAhg1Lh2g";
 	
-	@ExceptionHandler(EventNotFoundException.class)
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public String venueNotFoundHandler(VenueNotFoundException ex, Model model) {
-		model.addAttribute("not_found_id", ex.getId());
-
-		return "venues/not_found";
-	}
+//	@ExceptionHandler(EventNotFoundException.class)
+//	@ResponseStatus(HttpStatus.NOT_FOUND)
+//	public String venueNotFoundHandler(VenueNotFoundException ex, Model model) {
+//		model.addAttribute("not_found_id", ex.getId());
+//
+//		return "venues/not_found";
+//	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String getAllVenues(Model model) {
@@ -76,7 +76,10 @@ public class VenuesController {
 	@GetMapping("/details/{id}")
 	public String getVenueDetails(@PathVariable("id") long id, Model model) {
 		Venue v = venueService.getVenueById(id);
-		if(v == null) throw new EventNotFoundException(id);
+		if(v == null) {
+			model.addAttribute("not_found_id", id);
+			return "venues/not_found";
+	 	}
 		
 		List<Event> upcoming = new ArrayList<Event>();
 				
