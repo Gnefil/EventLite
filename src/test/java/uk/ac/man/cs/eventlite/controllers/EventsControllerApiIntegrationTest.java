@@ -51,28 +51,30 @@ public class EventsControllerApiIntegrationTest extends AbstractTransactionalJUn
 		client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port + "/api").build();
 	}
 
-	@Test
-	public void getEventsList() {
-		client.get().uri("/events").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectHeader()
-				.contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$._links.self.href")
-				.value(endsWith("/api/events")).jsonPath("$._embedded.events.length()").value(equalTo(currentRows));
-	}
-
-	@Test
-	public void getEvent() {
-		long id = 4;
-
-		client.get().uri("/events/{id}", id).accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
-				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$._links.self.href")
-				.value(endsWith("/" + id)).jsonPath("$._links.event.href").value(endsWith("/" + id))
-				.jsonPath("$._links.venue.href").value(endsWith("/" + id + "/venue"));
-	}
 	
-	@Test
-	public void getEventNotFound() {
-		client.get().uri("/events/99").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound()
-				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$.error")
-				.value(containsString("event 99")).jsonPath("$.id").isEqualTo(99);
-	}	
+//	These tests function individually but fail during running coverage, this was discussed with the professor and we settled on commenting them
+//	@Test
+//	public void getEventsList() {
+//		client.get().uri("/events").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectHeader()
+//				.contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$._links.self.href")
+//				.value(endsWith("/api/events")).jsonPath("$._embedded.events.length()").value(equalTo(currentRows));
+//	}
+//
+//	@Test
+//	public void getEvent() {
+//		long id = 4;
+//
+//		client.get().uri("/events/{id}", id).accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+//				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$._links.self.href")
+//				.value(endsWith("/" + id)).jsonPath("$._links.event.href").value(endsWith("/" + id))
+//				.jsonPath("$._links.venue.href").value(endsWith("/" + id + "/venue"));
+//	}
+//	
+//	@Test
+//	public void getEventNotFound() {
+//		client.get().uri("/events/99").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound()
+//				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$.error")
+//				.value(containsString("event 99")).jsonPath("$.id").isEqualTo(99);
+//	}	
 
 }
