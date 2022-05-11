@@ -44,14 +44,6 @@ public class VenuesController {
 	
 	String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiYXNvbGkiLCJhIjoiY2wxYWl3NzUyMXk3bTNpc2d4a3BrYmlpMiJ9.T1Lq2KsPQlAuWIAhg1Lh2g";
 	
-//	@ExceptionHandler(EventNotFoundException.class)
-//	@ResponseStatus(HttpStatus.NOT_FOUND)
-//	public String venueNotFoundHandler(VenueNotFoundException ex, Model model) {
-//		model.addAttribute("not_found_id", ex.getId());
-//
-//		return "venues/not_found";
-//	}
-
 	@RequestMapping(method = RequestMethod.GET)
 	public String getAllVenues(Model model) {
 
