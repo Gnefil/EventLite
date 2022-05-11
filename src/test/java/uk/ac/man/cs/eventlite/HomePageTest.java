@@ -4,11 +4,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.Collections;
+
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +27,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
+import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = EventLite.class)
@@ -37,6 +44,12 @@ public class HomePageTest {
 	@MockBean
 	private VenueService venueService;
 
+	@Mock
+	private Event event;
+	
+	@Mock
+	private Venue venue;
+	
 	@Autowired
 	private WebApplicationContext context;
 
@@ -63,7 +76,7 @@ public class HomePageTest {
 	}
 	
 	@Test
-	public void checkGetEventsAndVenuesForHomePage() throws Exception{
+	public void checkGetEventsAndVenuesForHomePage() throws Exception{	
 		mvc.perform(get("/").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 			.andExpect(handler().methodName("getEventsAndVenuesForHomePage"));
 		

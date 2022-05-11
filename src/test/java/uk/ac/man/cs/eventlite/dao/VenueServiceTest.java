@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.dao;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -222,5 +224,33 @@ public class VenueServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 	    	count += 1;
         }
 	}
+	
+	@Test
+	public void testGeocode() {
+		String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiYXNvbGkiLCJhIjoiY2wxYWl3NzUyMXk3bTNpc2d4a3BrYmlpMiJ9.T1Lq2KsPQlAuWIAhg1Lh2g";
+		Venue A = new Venue("A", "23 Manchester Road", "E14 3BD", 50);
+		Venue venue = venueService.geocode(A, MAPBOX_ACCESS_TOKEN);
+	
+		assertTrue(A == venue);
+	}
+	
+	@Test
+	public void testGeocodeFail() {
+		String MAPBOX_ACCESS_TOKEN = "meow";
+		Venue A = new Venue("A", "23 Manchester Road", "E14 3BD", 50);
+		
+		assertThrows(com.mapbox.core.exceptions.ServicesException.class, () -> {
+			venueService.geocode(A, MAPBOX_ACCESS_TOKEN);
+	    });
+	}
 
+	@Test
+	public void testGeocodeMeow() {
+		String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoiYXNvbGkiLCJhIjoiY2wxYWl3NzUyMXk3bTNpc2d4a3BrYmlpMiJ9.T1Lq2KsPQlAuWIAhg1Lh2g";
+		Venue A = new Venue("A", "D", "D", 50);
+		Venue venue = venueService.geocode(A, MAPBOX_ACCESS_TOKEN);
+	
+		assertTrue(A == venue);
+	}
+	
 }

@@ -4,14 +4,18 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -455,5 +459,28 @@ public class VenuesControllerTest {
 		.andExpect(handler().methodName("createVenue"));
 		verify(venueService).save(newVenueArg.capture());
 	}
+
+	 @Test
+	@WithMockUser(username = "Mustafa", password = "Mustafa", roles= {"ADMINISTRATOR"})
+	  public void getLatLongWithPostcodeInMap() throws Exception{
+		ArgumentCaptor<Venue> newVenueArg = ArgumentCaptor.forClass(Venue.class);
+		when(venueService.getVenueById(1)).thenReturn(venue);
+		mvc.perform(MockMvcRequestBuilders.post("/venues/newVenue")
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("name", "Kilburn")
+				.param("roadName", "Oxford Rd")
+				.param("postcode", "M13 9GP")
+				.param("capacity", "5000")
+				.accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isFound())
+		.andExpect(view().name("redirect:/venues")).andExpect(model().hasNoErrors())
+		.andExpect(handler().methodName("createVenue"));
+		verify(venueService).save(newVenueArg.capture());
+		when(venueService.save(newVenueArg.capture())).thenReturn(null);
+		assertThat(newVenueArg.getValue(), equalTo(null));
+	    //assertThat(53.4667506, equalTo(newVenueArg.getValue().getLatitude()));
+	    //assertThat(-2.2336761, equalTo(newVenueArg.getValue().getLongitude()));
+	    
+	  }
 
 }

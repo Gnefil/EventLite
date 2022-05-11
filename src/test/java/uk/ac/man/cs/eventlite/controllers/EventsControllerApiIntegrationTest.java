@@ -34,18 +34,12 @@ public class EventsControllerApiIntegrationTest extends AbstractTransactionalJUn
 	public void setup() {
 		client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port + "/api").build();
 	}
-
+	
+	
 	@Test
 	public void testGetAllEvents() {
 		client.get().uri("/events").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectHeader()
 				.contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$._links.self.href")
 				.value(endsWith("/api/events")).jsonPath("$._embedded.events.length()").value(equalTo(6));
-	}
-
-	@Test
-	public void getEventNotFound() {
-		client.get().uri("/events/99").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound()
-				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$.error")
-				.value(containsString("event 99")).jsonPath("$.id").isEqualTo(99);
 	}
 }

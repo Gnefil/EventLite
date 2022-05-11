@@ -427,5 +427,4 @@ public class EventsControllerTest {
 		.andExpect(handler().methodName("newEvent"));
 	}
 	
-	
 }
