@@ -397,6 +397,7 @@ public class EventsControllerTest {
 		.andExpect(view().name("events/details/index")).andExpect(handler().methodName("getEventsDetails"));
 		verify(eventService).getEventById(id);
 	}
+
 	
 	@Test
 	public void postEvent() throws Exception {
