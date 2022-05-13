@@ -2,6 +2,9 @@ package uk.ac.man.cs.eventlite.controllers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.hamcrest.core.StringEndsWith.endsWith;
+import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
 
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -26,6 +29,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.web.reactive.server.EntityExchangeResult;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -36,6 +41,12 @@ import uk.ac.man.cs.eventlite.EventLite;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4SpringContextTests {
+	
+	private static Pattern CSRF = Pattern.compile("(?s).*name=\"_csrf\".*?value=\"([^\"]+).*");
+	private static String CSRF_HEADER = "X-CSRF-TOKEN";
+	private static String SESSION_KEY = "JSESSIONID";
+
+	private WebTestClient client;
 	
 	@LocalServerPort
 	private int port;
@@ -63,6 +74,10 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
 		headers.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
 
 		httpEntity = new HttpEntity<String>(headers);
+		
+		// For extra post test
+		client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
+
 	}
 	
 	@Test
@@ -384,14 +399,7 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
 		
 	}
 	
-	
-	public static String getCsrfToken(String body)
-	{
-		Pattern pattern = Pattern.compile("(?s).*name=\"_csrf\".*?value=\"([^\"]+).*");
-		Matcher matcher = pattern.matcher(body);
-		assertThat(matcher.matches(), equalTo(true));
-		return matcher.group(1);
-	}
+
 	
 	public  String integrationLogin(TestRestTemplate t, HttpHeaders getHeaders, HttpHeaders postHeaders)
 	{
@@ -414,6 +422,92 @@ public class VenuesControllerIntegrationTest extends AbstractTransactionalJUnit4
 		assertThat(loginResponse.getStatusCode(), equalTo(HttpStatus.FOUND));
 		
 		return cookie;
+	}
+	
+	
+	@Test
+	public void postVenue() {
+		String[] tokens = login();
+
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("name", "venue");
+		form.add("roadName", "Oxford street");
+		form.add("postcode", "M13 5LF");
+		form.add("capacity", "50");
+
+		
+		client.post().uri("/venues/newVenue").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).cookies(cookies -> {cookies.add(SESSION_KEY, tokens[1]);}).exchange().expectStatus().isFound().expectHeader()
+				.value("Location", endsWith("/venues"));
+
+	}
+	
+	
+	@Test
+	public void postNoDataVenue() {
+		String[] tokens = login();
+
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		
+		client.post().uri("/venues/newVenue").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).cookies(cookies -> {cookies.add(SESSION_KEY, tokens[1]);}).exchange().expectStatus().isOk()
+				.expectHeader().contentTypeCompatibleWith(MediaType.TEXT_HTML).expectBody(String.class)
+				.consumeWith(result -> {assertThat(result.getResponseBody(), containsString("Create a Venue"));});
+
+	}
+	
+	@Test
+	public void postBadDataVenue() {
+		String[] tokens = login();
+
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("name", "");
+		form.add("roadName", "Oxford street");
+		form.add("postcode", "M13 5LF");
+		form.add("capacity", "50");
+		
+		client.post().uri("/venues/newVenue").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).cookies(cookies -> {cookies.add(SESSION_KEY, tokens[1]);}).exchange().expectStatus().isOk()
+				.expectHeader().contentTypeCompatibleWith(MediaType.TEXT_HTML).expectBody(String.class)
+				.consumeWith(result -> {assertThat(result.getResponseBody(), containsString("Create a Venue"));});
+
+	}
+	
+	
+	@Test
+	public void postUnauVenue() {
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("name", "venue");
+		form.add("roadName", "Oxford street");
+		form.add("postcode", "M13 5LF");
+		form.add("capacity", "50");
+
+		client.post().uri("/venues/newVenue").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.bodyValue(form).exchange().expectStatus().is4xxClientError();
+
+	}
+
+	
+	private String[] login() {
+		String[] tokens = new String[2];
+
+		EntityExchangeResult<String> result = client.mutate().filter(basicAuthentication("Mustafa", "Mustafa")).build().get()
+				.uri("/events").accept(MediaType.TEXT_HTML).exchange().expectBody(String.class).returnResult();
+		tokens[0] = getCsrfToken(result.getResponseBody());
+		tokens[1] = result.getResponseCookies().getFirst(SESSION_KEY).getValue();
+
+		return tokens;
+	}
+
+	private String getCsrfToken(String body) {
+		Matcher matcher = CSRF.matcher(body);
+
+		assertThat(matcher.matches(), equalTo(true));
+
+		return matcher.group(1);
 	}
 
 }
