@@ -1,11 +1,9 @@
 package uk.ac.man.cs.eventlite.dao;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import twitter4j.TwitterException;
 import twitter4j.Status;
+import twitter4j.TwitterException;
 import uk.ac.man.cs.eventlite.entities.Event;
 
 public interface EventService {

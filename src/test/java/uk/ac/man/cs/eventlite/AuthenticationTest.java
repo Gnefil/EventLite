@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import uk.ac.man.cs.eventlite.config.Security;
-import uk.ac.man.cs.eventlite.config.data.InitialDataLoader;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(EventLite.class)

@@ -3,36 +3,27 @@ package uk.ac.man.cs.eventlite.dao;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.junit.jupiter.api.Disabled;
-
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
+import twitter4j.Status;
+import twitter4j.TwitterException;
 import uk.ac.man.cs.eventlite.EventLite;
 import uk.ac.man.cs.eventlite.entities.Event;
-
 import uk.ac.man.cs.eventlite.entities.Venue;
-
-import twitter4j.TwitterException;
-import twitter4j.Status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = EventLite.class)

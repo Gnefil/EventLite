@@ -9,7 +9,6 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 import uk.ac.man.cs.eventlite.controllers.EventsControllerApi;
-import uk.ac.man.cs.eventlite.controllers.VenuesControllerApi;
 import uk.ac.man.cs.eventlite.entities.Event;
 
 @Component

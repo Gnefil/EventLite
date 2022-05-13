@@ -3,8 +3,6 @@ package uk.ac.man.cs.eventlite.dao;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
