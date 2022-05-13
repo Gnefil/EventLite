@@ -29,18 +29,19 @@ import uk.ac.man.cs.eventlite.EventLite;
 @SpringBootTest(classes = EventLite.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("test")
-public class EventsControllerApiIntegrationTest extends AbstractTransactionalJUnit4SpringContextTests {
 
-	@LocalServerPort
-	private int port;
+public class VenuesControllerApiIntegrationTest  extends AbstractTransactionalJUnit4SpringContextTests {
 
 	private HttpEntity<String> httpEntity;
 
 	@Autowired
 	private TestRestTemplate template;
-	
+
 	private WebTestClient client;
 
+	@LocalServerPort
+	private int port;
+	
 	@BeforeEach
 	public void setup() {
 		client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port + "/api").build();
@@ -48,37 +49,41 @@ public class EventsControllerApiIntegrationTest extends AbstractTransactionalJUn
 
 	
 	@Test
-	public void testGetAllEvents() {
-		ResponseEntity<String> response = template.exchange("/api/events", HttpMethod.GET, httpEntity, String.class);
+	public void testGetAllVenues() {
+		ResponseEntity<String> response = template.exchange("/api/venues", HttpMethod.GET, httpEntity, String.class);
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 	}
 	
 	@Test
-	public void testGetOneEvent() {
-		ResponseEntity<String> response = template.exchange("/api/events/4", HttpMethod.GET, httpEntity, String.class);
+	public void testGetOneVenue() {
+		ResponseEntity<String> response = template.exchange("/api/venues/1", HttpMethod.GET, httpEntity, String.class);
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 	}
 	
 	@Test
-	public void getEventsList() {
-		client.get().uri("/events").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectHeader()
+	public void getVenuesListToFail() {
+		client.get().uri("/venues").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().is5xxServerError();
+	}
+	
+//	Appologies for the naming and the above test after consulting with the professors we reached this solution
+	@Test
+	public void getVenuesListToNotFail() {
+		client.get().uri("/venues").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk().expectHeader()
 				.contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$._links.self.href")
-				.value(endsWith("/api/events")).jsonPath("$._embedded.events.length()").value(equalTo(6));
+				.value(endsWith("/api/venues")).jsonPath("$._embedded.venues.length()").value(equalTo(3));
 	}
 	
 	@Test
-	public void getEvent() {
-		long id = 4;
+	public void getVenue() {
+		long id = 1;
 
-		client.get().uri("/events/{id}", id).accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+		client.get().uri("/venues/{id}", id).accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
 				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$._links.self.href")
-				.value(endsWith("/" + id)).jsonPath("$._links.event.href").value(endsWith("/" + id))
-				.jsonPath("$._links.venue.href").value(endsWith("/" + id + "/venue"));
+				.value(endsWith("/" + id)).jsonPath("$._links.venue.href").value(endsWith("/" + id))
+				.jsonPath("$._links.events.href").value(endsWith("/" + id + "/events"));
 	}
-
-
 
 
 }
